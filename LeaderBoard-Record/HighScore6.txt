@@ -1,0 +1,10 @@
+Thi Hang,15 : 57, 855
+Minh Huyen,16 : 02, 856
+Duc Anh,17 : 36, 855
+Tran Nam,16 : 33, 955
+Thanh Thao,17 : 57, 956
+Quoc Khanh,18 : 02, 953
+Bao Ngoc,18 : 36, 1055
+Hoang Phuc,18 : 57, 956
+Thao Vy,17 : 51, 1052
+Van Quan,18 : 59, 1055

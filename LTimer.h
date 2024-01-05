@@ -6,12 +6,12 @@ class LTimer
 {
 public:
     //Initializes variables
-    LTimer();
+    LTimer(Uint32 time = 0);
 
     LTimer(int time);
 
     //The various clock actions
-    void start();
+    void start(Uint32 time = 0);
     void stop();
     void pause();
     void unpause();
@@ -26,7 +26,7 @@ public:
 private:
     //The clock time when the timer started
     Uint32 mStartTicks;
-
+    Uint32 time;
     //The ticks stored when the timer was paused
     Uint32 mPausedTicks;
 

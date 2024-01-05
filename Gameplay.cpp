@@ -5,7 +5,6 @@
 #include "LeaderBoard.h"
 
 LTexture Shownumber[36];
-LeaderBoard LB;
 LTexture ButtonBack, ButtonReload, ButtonAutoRun, ButtonMode, StepTexture, SolveMode, LoadingImage, FrameLoadingImage;
 LButton gButtonBack, gButtonReload, gButtonAutoRun;
 
@@ -23,6 +22,23 @@ LTexture Background, GoalImage;
 bool isPressBack = false;
 bool WinnerScreenOff = false;
 bool isPressReload = false;
+
+int timeToSeconds(std::string timeStr) {
+    int minutes, seconds;
+    char delimiter;
+
+    std::istringstream iss(timeStr);
+    iss >> minutes >> std::noskipws >> delimiter >> seconds;
+
+    int totalSeconds = minutes * 60 + seconds;
+    return totalSeconds;
+}
+
+void Gameplay::SetInitialStatus()
+{
+    res = 1;
+    UsedtoPressAutoRun = false;
+}
 
 bool Gameplay::LoadMedia() 
 {
@@ -797,6 +813,7 @@ void Gameplay::SetNguoc(int height)
     if ((check + Poszero.first * (n % 2 + 1)) % 2 == 0) cout << "Duoc\n";
     else cout << "Khong the giai\n";
 }
+
 void Gameplay::SetUpGame(int height)
 {
     setA();
@@ -1016,10 +1033,11 @@ void Gameplay::handleEvents() {
             isRunning = false;
             isPressBack = true;
             Outfile();
-            if (timer.isStarted() || timer.isPaused())
+            if (timer.isStarted() && !timer.isPaused())
             {
-                timer.stop();
+                timer.pause();
             }
+            SetInitialStatus();
         }
         if (!checksolve && !CheckGoal(a))
         {
@@ -1120,7 +1138,7 @@ void Gameplay::SolveGame()
 
                     if (timer.isStarted() || timer.isPaused())
                     {
-                        timer.stop();
+                        timer.pause();
                     }
                 }
             }
@@ -1191,7 +1209,6 @@ void Gameplay::render() {
         Number[i]->Render();
         if (ShowNumber) Shownumber[i].render(posIMG[i].first + 5, posIMG[i].second + 5);
     }
-
     if (CheckGoal(a))
     {
         //if (!AddScoretoFile())
@@ -1207,7 +1224,8 @@ void Gameplay::render() {
             {
                 cout << "Khong the luu diem vo file" << endl;
             }
-            int rank = LB.ReturnRank(n - 3, { "Linh", timeplay, step });
+            LeaderBoard LB;
+            int rank = LB.ReturnRank(ModeLeaderBoard(n - 3), { "Linh", timeplay, step });
             Winner W(step, timeplay, rank);
             W.run();
             isPressBack = W.GetIsPressBack();
@@ -1216,6 +1234,10 @@ void Gameplay::render() {
             {
                 PressReload();
                 isPressReload = false;
+            }
+            else if (isPressBack)
+            {
+                SetInitialStatus();
             }
             else WinnerScreenOff = true;
         }
@@ -1277,6 +1299,7 @@ void Gameplay::clean() {
 void Gameplay::Run() {
     if (LoadMedia())
     {
+        WinnerScreenOff = false;
         SetUpGame(594);
         for (int i = 1; i <= n * n; ++i)
         {

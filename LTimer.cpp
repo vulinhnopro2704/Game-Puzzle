@@ -1,6 +1,6 @@
 #include "LTimer.h"
 
-LTimer::LTimer()
+LTimer::LTimer(Uint32 time) : time(time)
 {
 	mStartTicks = 0;
 	mPausedTicks = 0;
@@ -9,17 +9,7 @@ LTimer::LTimer()
 	mPaused = false;
 }
 
-//LTimer::LTimer(int time)
-//{
-//	mStartTicks = -time;
-//	mPausedTicks = 0;
-//
-//	mStarted = false;
-//	mPaused = false;
-//}
-
-
-void LTimer::start()
+void LTimer::start(Uint32 time)
 {
 	//Start Timer
 	mStarted = true;
@@ -28,7 +18,7 @@ void LTimer::start()
 	mPaused = false;
 
 	//Get Current clock time
-	mStartTicks = SDL_GetTicks();
+	mStartTicks = SDL_GetTicks() - time * 1000;
 	mPausedTicks = 0;
 }
 
@@ -77,7 +67,7 @@ void LTimer::unpause()
 Uint32 LTimer::getTicks()
 {
 	//The actual timer time
-	Uint32 time = 0;
+	Uint32 timing = 0;
 
 	//If the timer is running
 	if (mStarted)
@@ -86,12 +76,12 @@ Uint32 LTimer::getTicks()
 		if (mPaused)
 		{
 			//Return the number of ticks when the timer was paused
-			time = mPausedTicks;
+			timing = mPausedTicks;
 		}
 		else
 		{
 			//Return the current time minus the start time
-			time = SDL_GetTicks() - mStartTicks;
+			timing = SDL_GetTicks() - mStartTicks + time * 1000;
 		}
 	}
 

@@ -1,0 +1,19 @@
+@startuml GameObject
+
+class GameObject {
+  - xpos: int
+  - ypos: int
+  - objTexture: SDL_Texture*
+  - srcRect: SDL_Rect
+  - destRect: SDL_Rect
+  - renderer: SDL_Renderer*
+
+  + GameObject(texturesheet: const char*, ren: SDL_Renderer*, x: int, y: int)
+  + GameObject(Texture: SDL_Texture*, ren: SDL_Renderer*, x: int, y: int)
+  + Update(x: int, y: int, Width: int, Height: int)
+  + ~GameObject()
+  + Update(x: int, y: int, X: int, Y: int, Width: int, Height: int)
+  + Render()
+}
+
+@enduml

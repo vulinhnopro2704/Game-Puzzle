@@ -158,13 +158,23 @@ void MenuStart::close() {
 
 bool MenuStart::CheckNonFinishGame(int n)
 {
-    if (GUEST) return false;
+    if (GUEST)
+    {
+        string tenfile = "ContinueGame//puzzle";
+        tenfile += to_string(n) + "guest.txt";
+        ifstream inFile(tenfile);
+        bool status;
+        inFile >> status;
+        return status;
+    }
     string tenfile = "ContinueGame//puzzle";
     string N = to_string(n);
-    tenfile += N + ".txt";
+    tenfile += N + to_string(NumCurrent) + ".txt";
     ifstream inFile(tenfile);
     bool status;
+    cout << tenfile << endl;
     inFile >> status;
+    cout << "Status: " << status << endl;
     return status;
 }
 

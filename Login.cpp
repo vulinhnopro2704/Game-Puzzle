@@ -251,7 +251,7 @@ bool Login::HandleEvent()
                         if (Name.size() <= 16 && !(SDL_GetModState() & KMOD_CTRL && (e.text.text[0] == 'c' || e.text.text[0] == 'C' || e.text.text[0] == 'v' || e.text.text[0] == 'V')))
                         {
                             //Append character
-                            Name += e.text.text;
+                            if (e.text.text[0] != ' ') Name += e.text.text;
                             renderText = true;
                         }
                     }
@@ -260,8 +260,11 @@ bool Login::HandleEvent()
                         if (Pass.size() <= 16 && !(SDL_GetModState() & KMOD_CTRL && (e.text.text[0] == 'c' || e.text.text[0] == 'C' || e.text.text[0] == 'v' || e.text.text[0] == 'V')))
                         {
                             //Append character
-                            Pass += e.text.text;
-                            HidePass += '*';
+                            if (e.text.text[0] != ' ')
+                            {
+                                Pass += e.text.text;
+                                HidePass += '*';
+                            }
                             renderText = true;
                         }
                     }
@@ -298,6 +301,15 @@ bool Login::HandleEvent()
                         cout << "Guest\n";
                         Name = "Guest";
                         checkGuest = true;
+                        string tmp = "ContinueGame//puzzle";
+                        for (int i = 3; i <= 6; i++)
+                        {
+                            string tenfile = tmp + to_string(i) + "guest.txt";
+                            cout << tenfile << endl;
+                            ofstream outFile(tenfile);
+                            outFile << 0;
+                            outFile.close();
+                        }
                         Lquit = true;
                     }
                     else if (x >= 430 && x <= 850)
@@ -456,7 +468,7 @@ bool Login::HandleEvent()
                         if (RName.size() <= 16 && !(SDL_GetModState() & KMOD_CTRL && (e.text.text[0] == 'c' || e.text.text[0] == 'C' || e.text.text[0] == 'v' || e.text.text[0] == 'V')))
                         {
                             //Append character
-                            RName += e.text.text;
+                            if (e.text.text[0] != ' ') RName += e.text.text;
                             renderText = true;
                         }
                     }
@@ -465,8 +477,12 @@ bool Login::HandleEvent()
                         if (RPass.size() <= 16 && !(SDL_GetModState() & KMOD_CTRL && (e.text.text[0] == 'c' || e.text.text[0] == 'C' || e.text.text[0] == 'v' || e.text.text[0] == 'V')))
                         {
                             //Append character
-                            RPass += e.text.text;
-                            RHidePass += '*';
+                            if (e.text.text[0] != ' ')
+                            {
+                                RPass += e.text.text;
+                                RHidePass += '*';
+                            }
+                            
                             renderText = true;
                         }
                     }
@@ -475,8 +491,11 @@ bool Login::HandleEvent()
                         if (RCPass.size() <= 16 && !(SDL_GetModState() & KMOD_CTRL && (e.text.text[0] == 'c' || e.text.text[0] == 'C' || e.text.text[0] == 'v' || e.text.text[0] == 'V')))
                         {
                             //Append character
-                            RCPass += e.text.text;
-                            RCHidePass += '*';
+                            if (e.text.text[0] != ' ')
+                            {
+                                RCPass += e.text.text;
+                                RCHidePass += '*';
+                            }
                             renderText = true;
                         }
                     }

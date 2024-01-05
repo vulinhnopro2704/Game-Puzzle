@@ -26,8 +26,8 @@ bool GUEST = false;
 int main(int argc, char* argv[])
 {
     
-    while (1)
-    {
+    //while (1)
+    //{
         Login user;
         user.Run();
         GUEST = user.getGuest();
@@ -36,6 +36,7 @@ int main(int argc, char* argv[])
             NumCurrent = user.getNumFile();
             MainMenu a(user.getName());
             a.run();
+            GUEST = false;
         }
         else
         {
@@ -57,7 +58,7 @@ int main(int argc, char* argv[])
         IMG_Quit();
         TTF_Quit();
         SDL_Quit();
-    }
+    //}
     
 	return 0;
 }

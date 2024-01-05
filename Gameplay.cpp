@@ -610,11 +610,17 @@ void Gameplay::SolveMouse(pair<int, int> p)
 
 void Gameplay::Infile()
 {
-    if (GUEST) return;
+    string tenfile = "ContinueGame//puzzle" + to_string(n);
+    if (GUEST)
+    {
+        tenfile += "guest.txt";
+    }
+    else
+    {
+        tenfile += to_string(NumCurrent) + ".txt";
+    }
     cout << "Infile run" << endl;
-    string tenfile = "ContinueGame//puzzle";
-    string N = to_string(n);
-    tenfile += N + to_string(NumCurrent) + ".txt";
+
     ifstream inFile(tenfile);
     int status;
     inFile >> status;
@@ -668,10 +674,15 @@ bool Gameplay::AddScoretoFile()
 
 void Gameplay::Outfile()
 {
-    if (GUEST) return;
-    string tenfile = "ContinueGame//puzzle";
-    string N = to_string(n);
-    tenfile += N + to_string(NumCurrent) + ".txt";
+    string tenfile = "ContinueGame//puzzle" + to_string(n);
+    if (GUEST)
+    {
+        tenfile += "guest.txt";
+    }
+    else
+    {
+        tenfile += to_string(NumCurrent) + ".txt";
+    }
     std::remove(tenfile.c_str()); // Xóa tệp cũ nếu tồn tại
     ofstream outFile(tenfile);
     if (CheckGoal(a))

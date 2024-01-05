@@ -632,6 +632,16 @@ void Gameplay::Infile()
     {
         if (inFile.is_open())
         {
+            inFile >> step;
+            string temp;
+            inFile >> temp;
+            for (int i = 0; i < temp.size(); i++)
+            {
+                timeplay += temp[i];
+                if (i == 1 || i == 2) timeplay += ' ';
+            }
+
+            cout << "step: " << step << "\ntimeplay: " << timeplay << endl;
             for (int i = 1; i <= n; i++)
             {
                 for (int j = 1; j <= n; j++)
@@ -696,6 +706,12 @@ void Gameplay::Outfile()
     else
     {
         outFile << 1 << endl;
+        outFile << step << endl;
+        for (int i = 0; i < timeplay.size(); i++)
+        {
+            if (timeplay[i] != ' ') outFile << timeplay[i];
+        }
+        outFile << endl;
         if (outFile.is_open())
         {
             for (int i = 1; i <= n; i++)
@@ -1101,6 +1117,7 @@ void Gameplay::SolveGame()
                     isQuit = true;
                     isRunning = false;
                     isPressBack = true;
+
                     if (timer.isStarted() || timer.isPaused())
                     {
                         timer.stop();
@@ -1191,7 +1208,7 @@ void Gameplay::render() {
                 cout << "Khong the luu diem vo file" << endl;
             }
             int rank = LB.ReturnRank(n - 3, { "Linh", timeplay, step });
-            Winner W(step, timeplay, 10);
+            Winner W(step, timeplay, rank);
             W.run();
             isPressBack = W.GetIsPressBack();
             isPressReload = W.GetIsPressReload();

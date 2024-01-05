@@ -9,6 +9,16 @@ LTimer::LTimer()
 	mPaused = false;
 }
 
+//LTimer::LTimer(int time)
+//{
+//	mStartTicks = -time;
+//	mPausedTicks = 0;
+//
+//	mStarted = false;
+//	mPaused = false;
+//}
+
+
 void LTimer::start()
 {
 	//Start Timer

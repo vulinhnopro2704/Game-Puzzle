@@ -1,10 +1,1 @@
-Nhat Nam, 6 : 57, 256
-Hong Anh, 7 : 02, 353
-Van Khanh, 9 : 36, 355
-Quang Huy, 6 : 33, 355
-Linh Nga, 7 : 57, 356
-Bao An, 8 : 02, 453
-Mai Linh, 9 : 36, 453
-Minh Phuong, 9 : 57, 356
-Tien Duc, 7 : 51, 352
-Khanh Linh, 8 : 59, 455Gio ms la Linh,02 : 31,339
+dotuangv1,01 : 17,155

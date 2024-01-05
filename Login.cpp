@@ -69,6 +69,7 @@ Login::Login()
             inFile >> name;
             CheckA[name] = true;
         }
+
         for (int i = 0; i < CountAccount; i++)
         {
             string name;
@@ -78,6 +79,10 @@ Login::Login()
         inFile.close();
     }
     cout << CountAccount << endl;
+    for (auto x : CheckA) cout << x.first << " ";
+    cout << endl;
+    for (auto x : Account) cout << x.first << " " << x.second.first << " " << x.second.second << endl;
+
 }
 
 Login::~Login()
@@ -88,12 +93,17 @@ Login::~Login()
         outFile << CountAccount << endl;
         for (auto x: CheckA)
         {
-            outFile << x.first << " ";
+            outFile << x.first << endl;
+            cout << x.first << endl;
         }
-        outFile << endl;
         for (auto x : Account)
         {
-            outFile << x.first << " " << x.second.first << " " << x.second.second << endl;
+            if (x.first.size())
+            {
+                outFile << x.first << " " << x.second.first << " " << x.second.second << endl;
+                cout << x.first << " " << x.second.first << " " << x.second.second << endl;
+            }
+            
         }
         outFile.close();
     }
@@ -152,6 +162,11 @@ bool Login::HandleEvent()
             //Special key input
             if (Log)
             {
+                RName = "";
+                RPass = "";
+                RCPass = "";
+                RHidePass = "";
+                RCHidePass = "";
                 if (e.type == SDL_KEYDOWN)
                 {
                     //Handle backspace
@@ -256,18 +271,18 @@ bool Login::HandleEvent()
                 {
                     int x = e.motion.x, y = e.motion.y;
                     cout << x << " " << y << endl;
-                    if (x >= 977 && x <= 977 + 115 && y >= 111 && y <= 226)
-                    {
-                        Lquit = true;
-                        //isHadNameInput = false;
-                        break;
-                    }
+                    //if (x >= 977 && x <= 977 + 115 && y >= 111 && y <= 226)
+                    //{
+                    //    Lquit = true;
+                    //    //isHadNameInput = false;
+                    //    break;
+                    //}
                     //else if (x >= 407 && x <= 407 + 470 && y >= 509 && y <= 613 && Name.size() && Pass.size())
                     //{
                     //    Lquit = true;
                     //    //isHadNameInput = true;
                     //}
-                    else if (x >= 800 && x <= 840 && y >= 375 && y <= 400)
+                    /*else*/ if (x >= 800 && x <= 840 && y >= 375 && y <= 400)
                     {
                         Hide = !Hide;
                         if (Hide) LPinputTextTexture.loadFromRenderedText(HidePass.c_str(), textColor, 25);
@@ -277,6 +292,13 @@ bool Login::HandleEvent()
                     {
                         cout << "Register\n";
                         Log = false;
+                    }
+                    else if (x >= 380 && x <= 500 && y >= 520 && y <= 560)
+                    {
+                        cout << "Guest\n";
+                        Name = "Guest";
+                        checkGuest = true;
+                        Lquit = true;
                     }
                     else if (x >= 430 && x <= 850)
                     {
@@ -325,6 +347,9 @@ bool Login::HandleEvent()
             }
             else
             {
+                Name = "";
+                Pass = "";
+                HidePass = "";
                 //Register;
                 if (e.type == SDL_KEYDOWN)
                 {
@@ -529,14 +554,20 @@ bool Login::HandleEvent()
             }
             
         }
+        renderText = true;
         //Rerender text if needed
         if (renderText)
         {
             //Text is not empty
             if (Log)
             {
-                if (Lcheck)
-                {
+                RName = "";
+                RPass = "";
+                RCPass = "";
+                RHidePass = "";
+                RCHidePass = "";
+                /*if (Lcheck)
+                {*/
                     if (Name != "")
                     {
                         //Render new text
@@ -548,9 +579,9 @@ bool Login::HandleEvent()
                         //Render space texture
                         LNinputTextTexture.loadFromRenderedText(" ", textColor, 25);
                     }
-                }
+                /*}
                 else
-                {
+                {*/
                     if (Pass != "")
                     {
                         //Render new text
@@ -563,13 +594,16 @@ bool Login::HandleEvent()
                         //Render space texture
                         LPinputTextTexture.loadFromRenderedText(" ", textColor, 25);
                     }
-                }
+                //}
             }
             else
             {
+                Name = "";
+                Pass = "";
+                HidePass = "";
                 //Register
-                if (Rcheck == 0)
-                {
+                /*if (Rcheck == 0)
+                {*/
                     if (RName != "")
                     {
                         //Render new text
@@ -581,9 +615,9 @@ bool Login::HandleEvent()
                         //Render space texture
                         RNinputTextTexture.loadFromRenderedText(" ", textColor, 25);
                     }
-                }
+                /*}
                 else if(Rcheck == 1)
-                {
+                {*/
                     if (RPass != "")
                     {
                         //Render new text
@@ -597,9 +631,9 @@ bool Login::HandleEvent()
                         //Render space texture
                         RPinputTextTexture.loadFromRenderedText(" ", textColor, 25);
                     }
-                }
+                /*}
                 else
-                {
+                {*/
                     if (RCPass != "")
                     {
                         //Render new text
@@ -613,7 +647,7 @@ bool Login::HandleEvent()
                         //Render space texture
                         RCPinputTextTexture.loadFromRenderedText(" ", textColor, 25);
                     }
-                }
+                //}
             }
             
             
@@ -672,3 +706,7 @@ string Login::getName()
     return Name;
 }
 
+bool Login::getGuest()
+{
+    return checkGuest;
+}

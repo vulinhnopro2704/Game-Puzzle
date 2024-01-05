@@ -22,7 +22,7 @@ bool SoundOn = true;
 int Volume = 126;
 int TOTAL_IMAGE = 4;
 int NumCurrent = 0;
-
+bool GUEST = false;
 int main(int argc, char* argv[])
 {
     
@@ -30,9 +30,18 @@ int main(int argc, char* argv[])
     {
         Login user;
         user.Run();
-        NumCurrent = user.getNumFile();
-        MainMenu a(user.getName());
-        a.run();
+        GUEST = user.getGuest();
+        if (!GUEST)
+        {
+            NumCurrent = user.getNumFile();
+            MainMenu a(user.getName());
+            a.run();
+        }
+        else
+        {
+            MainMenu a("Guest");
+            a.run();
+        }
         isUSE = false;
         SDL_DestroyRenderer(gRenderer);
         SDL_DestroyWindow(gWindow);

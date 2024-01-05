@@ -40,7 +40,7 @@ public:
     MenuStart();
     MenuStart(string PlayerName);
     ~MenuStart();
-    int countPNGFiles(const wchar_t* folderPath);
+    int MScountPNGFiles(const wchar_t* folderPath);
     bool init();
     bool loadMedia();
     void close();

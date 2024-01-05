@@ -31,6 +31,7 @@ class Login
 	string RName;
 	string RPass;
 	string RCPass;
+	bool checkGuest = false;
 public:
 	Login();
 	~Login();
@@ -44,5 +45,6 @@ public:
 	string getName();
 	void TaoFile(string num, string type);
 	int getNumFile();
+	bool getGuest();
 };
 

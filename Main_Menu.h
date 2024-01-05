@@ -14,6 +14,7 @@
 class MainMenu {
 public:
     MainMenu(string PlayerName);
+    int countPNGFiles(const wchar_t* folderPath);
     ~MainMenu();
     bool init();
     bool loadMedia();

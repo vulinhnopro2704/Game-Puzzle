@@ -610,6 +610,7 @@ void Gameplay::SolveMouse(pair<int, int> p)
 
 void Gameplay::Infile()
 {
+    if (GUEST) return;
     cout << "Infile run" << endl;
     string tenfile = "ContinueGame//puzzle";
     string N = to_string(n);
@@ -667,6 +668,7 @@ bool Gameplay::AddScoretoFile()
 
 void Gameplay::Outfile()
 {
+    if (GUEST) return;
     string tenfile = "ContinueGame//puzzle";
     string N = to_string(n);
     tenfile += N + to_string(NumCurrent) + ".txt";

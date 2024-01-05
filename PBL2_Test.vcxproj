@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="About.h" />
     <ClInclude Include="CommonFunc.h" />
     <ClInclude Include="CommonTexture.h" />
     <ClInclude Include="Game.h" />
@@ -152,6 +153,7 @@
     <ClInclude Include="Winner.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="About.cpp" />
     <ClCompile Include="CommonFunc.cpp" />
     <ClCompile Include="CommonTexture.cpp" />
     <ClCompile Include="Game.cpp" />

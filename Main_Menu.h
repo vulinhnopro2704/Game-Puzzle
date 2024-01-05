@@ -13,7 +13,7 @@
 
 class MainMenu {
 public:
-    MainMenu();
+    MainMenu(string PlayerName);
     ~MainMenu();
     bool init();
     bool loadMedia();

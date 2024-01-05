@@ -14,6 +14,7 @@
 #include <queue>
 #include <vector>
 #include <set>
+#include <map>
 #include <utility>
 #include "GameObject.h"
 #include <string>
@@ -70,6 +71,7 @@ extern int Order;
 extern bool isUSE;
 extern bool isInit;
 
+extern int NumCurrent;
 //Trạng thái của button
 enum LButtonSprite
 {

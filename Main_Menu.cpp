@@ -2,9 +2,10 @@
 
 bool Continue = false;
 
-MainMenu::MainMenu() {
+MainMenu::MainMenu(string PlayerName) {
     mQuit = false;
     CanGetName = true;
+    this->PlayerName = PlayerName;
 }
 
 int countPNGFiles(const wchar_t* folderPath) {

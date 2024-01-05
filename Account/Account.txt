@@ -1,5 +1,5 @@
-3
-dotuangv vulinh vulinhkfa 
+2
+dotuangv vulinh 
   0
-0 vulinh 123456789
-vulinhkfa vulinhv11 2
+dotuangv 123456 0
+vulinh 123456789 1

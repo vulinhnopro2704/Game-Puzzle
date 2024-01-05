@@ -613,7 +613,7 @@ void Gameplay::Infile()
     cout << "Infile run" << endl;
     string tenfile = "ContinueGame//puzzle";
     string N = to_string(n);
-    tenfile += N + ".txt";
+    tenfile += N + to_string(NumCurrent) + ".txt";
     ifstream inFile(tenfile);
     int status;
     inFile >> status;
@@ -643,7 +643,7 @@ void Gameplay::Infile()
     cout << endl;
     for (int i = 0; i < n * n; i++)
     {
-        cout << posIMG[i].first <<" " << posIMG[i].second << endl;
+        cout << posIMG[i].first << " " << posIMG[i].second << endl;
     }
     cout << Poszero.first << " " << Poszero.second;
 }
@@ -667,9 +667,9 @@ bool Gameplay::AddScoretoFile()
 
 void Gameplay::Outfile()
 {
-    string tenfile = "ContinueGame/puzzle";
+    string tenfile = "ContinueGame//puzzle";
     string N = to_string(n);
-    tenfile += N + ".txt";
+    tenfile += N + to_string(NumCurrent) + ".txt";
     std::remove(tenfile.c_str()); // Xóa tệp cũ nếu tồn tại
     ofstream outFile(tenfile);
     if (CheckGoal(a))
@@ -766,7 +766,7 @@ void Gameplay::SetNguoc(int height)
 }
 void Gameplay::SetUpGame(int height)
 {
-    /*setA();
+    setA();
     if (ContinueGame)
     {
         Height = height;
@@ -774,8 +774,7 @@ void Gameplay::SetUpGame(int height)
         ContinueGame = false;
         Mode = 1;
     }
-    else */
-    if (Mode == 1)
+    else if (Mode == 1)
         Random(height);
     else if (Mode == 2)
         SetNguoc(height);

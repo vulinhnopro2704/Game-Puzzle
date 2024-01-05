@@ -234,16 +234,16 @@ public:
 			}
 			else if (e.type == SDL_MOUSEWHEEL)
 			{
-				if (e.wheel.y < 0)
-				{
+			if (e.wheel.y < 0)
+			{
 					if (Current + 1 < LeaderBoardRecord[CurrentMode].size() - 4)
-						++Current;
-				}
-				else if (e.wheel.y > 0)
-				{
-					if (Current - 1 >= 0)
-						--Current;
-				}
+					++Current;
+			}
+			else if (e.wheel.y > 0)
+			{
+				if (Current - 1 >= 0)
+					--Current;
+			}
 			}
 			
 			if (e.type == SDL_MOUSEBUTTONDOWN)
@@ -299,6 +299,7 @@ public:
 			LBTexture.render(0, 0);
 			HandleEvent();
 			render(ModeLeaderBoard(CurrentMode));
+			SDL_RenderPresent(gRenderer);
 		}
 	}
 };

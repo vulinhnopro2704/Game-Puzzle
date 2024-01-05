@@ -1,24 +1,2 @@
-Vu Linh,3 : 57,156
-Van Tuan,4 : 59,253
-Shiba,6 : 36,255
-Hoang Anh,5 : 45,178
-Mai Khanh,4 : 32,210
-Thanh Huyen,6 : 28,195
-Duc Anh,3 : 51,162
-Ngoc Tram,5 : 12,200
-Tuan Anh,4 : 59,235
-Phuong Thao,6 : 15,248
-Minh Tu,3 : 48,170
-Trung Hieu,5 : 36,190
-Ngoc Diep,4 : 42,215jjj,00 : 00,0
-KKK,00 : 00,0
-Looooooooooo,00 : 29,66
-jjj,00 : 26,80
-Test 2,00 : 44,123
-llll,00 : 29,90
-llll,00 : 33,109
-NO THING IMPORTAN,00 : 00,0
-sjafsdfkahkdf,00 : 57,146
-kjljk,00 : 34,115
-Guest,00 : 46,144
-imgay,00 : 17,30
+Guest,00 : 18,54
+Guest,00 : 13,27

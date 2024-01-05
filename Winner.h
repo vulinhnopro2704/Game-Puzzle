@@ -110,6 +110,7 @@ public:
 	void render()
 	{
 		WTexture.render(399, 79);
+		if (rank == -1) rank = 10;
 		RankTexture.render(553, 425, &RankRect[rank]);
 		TimeTexture.render((SCREEN_WIDTH - TimeTexture.getWidth()) / 2, 260);
 		StepTexture.render((SCREEN_WIDTH - StepTexture.getWidth()) / 2, 358);

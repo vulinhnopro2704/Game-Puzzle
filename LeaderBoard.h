@@ -79,6 +79,11 @@ public:
 	~LeaderBoard() {
 		LeaderBoardRecord.clear();
 		LBTexture.free();
+		StepTexture.clear();
+		TimeTexture.clear();
+		RankTexture.clear();
+		ModeDisplayButton.clear();
+		ModeDisplay.clear();
 	}
 
 	void RemoveAllScore()
@@ -138,21 +143,11 @@ public:
 
 	bool LoadFromFile(ModeLeaderBoard mode) {
 		bool success = true;
-		if (!LBTexture.loadFromFile("IMG//LeaderBoard//Leader Board - Main.png", false))
-		{
-			cout << "Can't load the LBTexture!! SDL ERROR: " << SDL_GetError() << " IMG ERROR: " << IMG_GetError() << endl;
-			success = false;
-		}
-
-		for (int i = 0; i < ModeTotal; ++i)
-		{
-			ModeDisplay[i].loadFromFile("IMG//LeaderBoard//Mode" + to_string(i) + ".png", false);
-		}
 
 		const std::string filename = "LeaderBoard-Record//HighScore" + to_string(mode + 3) + ".txt";
 
 		std::ifstream file(filename);
-		LeaderBoardRecord[static_cast<int>(mode)].clear(); // Clear old data from the vector before reading from the file
+		if (LeaderBoardRecord[mode].size()) LeaderBoardRecord[mode].clear(); // Clear old data from the vector before reading from the file
 
 		if (file.is_open()) {
 			std::string line;
@@ -165,17 +160,42 @@ public:
 				std::getline(ss, time, ',');
 				ss >> step;
 
-				LeaderBoardRecord[static_cast<int>(mode)].emplace_back(name, time, step);
+				LeaderBoardRecord[mode].emplace_back(name, time, step);
 			}
 			file.close();
 			std::cout << "Data has been successfully read into LeaderBoardScore vector " << filename << std::endl;
-			for (int i = 0; i < LeaderBoardRecord[static_cast<int>(mode)].size(); ++i) {
-				cout << LeaderBoardRecord[static_cast<int>(mode)][i].name << " "
-					<< LeaderBoardRecord[static_cast<int>(mode)][i].time << " "
-					<< LeaderBoardRecord[static_cast<int>(mode)][i].step << endl;
-				sort(LeaderBoardRecord[static_cast<int>(mode)].begin(),
-					LeaderBoardRecord[static_cast<int>(mode)].end(), Compare);
+			sort(LeaderBoardRecord[mode].begin(), LeaderBoardRecord[mode].end(), Compare);
+		}
+		else {
+			std::cerr << "Unable to open file to read data." << std::endl;
+			success = false;
+		}
+		return success;
+	}
+
+	bool LoadFileForMode(ModeLeaderBoard mode)
+	{
+		const std::string filename = "LeaderBoard-Record//HighScore" + to_string(mode + 3) + ".txt";
+		bool success = true;
+		std::ifstream file(filename);
+		if (LeaderBoardRecord[mode].size()) LeaderBoardRecord[mode].clear(); // Clear old data from the vector before reading from the file
+
+		if (file.is_open() && LeaderBoardRecord[mode].size() < 10) {
+			std::string line;
+			while (std::getline(file, line)) {
+				std::istringstream ss(line);
+				std::string name, time;
+				int step;
+
+				std::getline(ss, name, ',');
+				std::getline(ss, time, ',');
+				ss >> step;
+
+				LeaderBoardRecord[mode].emplace_back(name, time, step);
 			}
+			file.close();
+			std::cout << "Data has been successfully read into LeaderBoardScore vector " << filename << std::endl;
+			sort(LeaderBoardRecord[mode].begin(), LeaderBoardRecord[mode].end(), Compare);
 		}
 		else {
 			std::cerr << "Unable to open file to read data." << std::endl;
@@ -186,6 +206,14 @@ public:
 
 	void LoadAllData()
 	{
+		if (!LBTexture.loadFromFile("IMG//LeaderBoard//Leader Board - Main.png", false))
+		{
+			cout << "Can't load the LBTexture!! SDL ERROR: " << SDL_GetError() << " IMG ERROR: " << IMG_GetError() << endl;
+		}
+		for (int i = 0; i < ModeTotal; ++i)
+		{
+			ModeDisplay[i].loadFromFile("IMG//LeaderBoard//Mode" + to_string(i) + ".png", false);
+		}
 		for (int i = 0; i < 4; ++i)
 		{
 			for (int j = 0; j < LeaderBoardRecord[i].size(); ++j)
@@ -267,14 +295,15 @@ public:
 		}
 	}
 
-	int ReturnRank(int mode, Record R)
+	int ReturnRank(ModeLeaderBoard mode, Record R)
 	{
-		if (!LoadFromFile(ModeLeaderBoard(mode)))
+		if (!LoadFileForMode(mode))
 		{
 			cout << "LeaderBoard can't load some file " << endl;
 			return -1;
 		}
-		for (int i = 0; i < 10; ++i)
+		if (LeaderBoardRecord[mode].size() == 0) return 0;
+		for (int i = 0; i < LeaderBoardRecord[mode].size(); ++i)
 		{
 			if (!Compare(LeaderBoardRecord[mode][i], R))
 				return i;

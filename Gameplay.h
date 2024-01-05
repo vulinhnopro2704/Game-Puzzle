@@ -105,6 +105,7 @@ public:
     int checkPos(pair<int, int> p);
     void Run();
     static SDL_Event event;
+    void SetInitialStatus();
     bool LoadMedia();
     void HandleAuto();
     void SolveMouse(pair<int, int> p);

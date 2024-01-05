@@ -32,8 +32,6 @@ int main(int argc, char* argv[])
         user.Run();
         NumCurrent = user.getNumFile();
         MainMenu a(user.getName());
-    isUSE = false;
-    MainMenu a;
         a.run();
         isUSE = false;
         SDL_DestroyRenderer(gRenderer);

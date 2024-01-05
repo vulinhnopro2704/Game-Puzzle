@@ -44,6 +44,8 @@ extern bool outGame;
 extern bool ShowNumber;
 extern int Volume;
 extern bool SoundOn;
+extern int OrderSoundtrack;
+extern int OrderSoundeffect;
 
 //Screen
 

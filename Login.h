@@ -17,6 +17,8 @@ class Login
 	LTexture RPinputTextTexture;
 	//register confirm pass
 	LTexture RCPinputTextTexture;
+	LTexture LAnnounce;
+	LTexture Alert;
 	bool Lquit = false;
 	bool Lcheck = true;
 	bool Hide = true;
@@ -35,6 +37,7 @@ class Login
 public:
 	Login();
 	~Login();
+	void RenderAnnounce(string s);
 	bool Register();
 	bool login();
 	bool LoadFromFile();

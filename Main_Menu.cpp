@@ -142,10 +142,18 @@ void MainMenu::run() {
             }
             if (e.type == SDL_MOUSEBUTTONDOWN)
             {
-                if (e.motion.x > 130 && e.motion.x < 210 && e.motion.y > 20 && e.motion.y < 82)
+                if (e.motion.y > 20 && e.motion.y < 82)
                 {
-                    Setting S;
-                    S.Run();
+                    if (e.motion.x > 130 && e.motion.x < 210)
+                    {
+                        Setting S;
+                        S.Run();
+                    }
+                    else if (e.motion.x > 29 && e.motion.x < 90)
+                    {
+                        About A;
+                        A.run();
+                    }
                 }
             }
             for (int i = 0; i < TOTAL_BUTTONS; ++i) {

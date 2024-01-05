@@ -7,4 +7,4 @@ Quoc Khanh,18 : 02, 953
 Bao Ngoc,18 : 36, 1055
 Hoang Phuc,18 : 57, 956
 Thao Vy,17 : 51, 1052
-Van Quan,18 : 59, 1055
+Van Quan,18 : 59, 1055giap,02 : 04,155

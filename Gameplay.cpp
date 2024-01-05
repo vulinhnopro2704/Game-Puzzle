@@ -4,6 +4,7 @@
 #include "Winner.h"
 #include "LeaderBoard.h"
 
+LTexture Shownumber[36];
 LeaderBoard LB;
 LTexture ButtonBack, ButtonReload, ButtonAutoRun, ButtonMode, StepTexture, SolveMode, LoadingImage, FrameLoadingImage;
 LButton gButtonBack, gButtonReload, gButtonAutoRun;
@@ -65,12 +66,15 @@ bool Gameplay::LoadMedia()
     {
         success = false;
     }
-    else if (!(gSoundTrack = Mix_LoadMUS("Music//Rondo Alla.mp3")))
+    string sound = "Music//Soundtrack" + to_string(OrderSoundtrack) + ".mp3";
+    if (!(gSoundTrack = Mix_LoadMUS(sound.c_str())))
     {
         printf("Failed to load SoundTrack! SDL_mixer Error: %s\n", Mix_GetError());
         success = false;
     }
-    else if (!(gSlide = Mix_LoadWAV("Music//low.wav")))
+    sound = "Music//Soundeffect" + to_string(OrderSoundeffect) + ".wav";
+    cout << sound << endl;
+    if (!(gSlide = Mix_LoadWAV(sound.c_str())))
     {
         printf("Failed to load gSlide sound effect! SDL_mixer Error: %s\n", Mix_GetError());
         success = false;
@@ -1168,6 +1172,7 @@ void Gameplay::render() {
     for (int i = 1; i <= n * n - 1; i++)
     {
         Number[i]->Render();
+        if (ShowNumber) Shownumber[i].render(posIMG[i].first + 5, posIMG[i].second + 5);
     }
 
     if (CheckGoal(a))
@@ -1177,6 +1182,7 @@ void Gameplay::render() {
         //    cout << "Can't add to file \n";
         //}
         Number[0]->Render();
+        if (ShowNumber) Shownumber[0].render(posIMG[0].first + 5, posIMG[0].second + 5);
         SDL_RenderPresent(gRenderer);
         if (!WinnerScreenOff && !UsedtoPressAutoRun)
         {
@@ -1189,7 +1195,6 @@ void Gameplay::render() {
             W.run();
             isPressBack = W.GetIsPressBack();
             isPressReload = W.GetIsPressReload();
-            cout << isPressReload;
             if (isPressReload)
             {
                 PressReload();
@@ -1247,6 +1252,8 @@ void Gameplay::clean() {
     GoalImage.free();
     SDL_DestroyTexture(PlayerTex);
     PlayerTex = NULL;
+    for (int i = 0; i <= 36; ++i)
+        Shownumber[i].free();
 }
 
 
@@ -1254,6 +1261,11 @@ void Gameplay::Run() {
     if (LoadMedia())
     {
         SetUpGame(594);
+        for (int i = 1; i <= n * n; ++i)
+        {
+            Shownumber[i].loadFromRenderedText(to_string(i), { 0xFB, 0xBC, 0x04, 0xF0 }, 32 - n * 3);
+        }
+        Shownumber[0].loadFromRenderedText(to_string(n * n), { 0xFB, 0xBC, 0x04, 0xF0 }, 32 - n * 3);
         Play();
         Clear();
         clean();

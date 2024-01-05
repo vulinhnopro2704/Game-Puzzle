@@ -36,7 +36,7 @@ private:
 	int Current;
 	//Chế độ hiện tại
 	int CurrentMode;
-	int MAX = 20;
+	int MAX = 40;
 
 	const int ButtonWidth = 134;
 	const int ButtonHeight = 71;
@@ -190,6 +190,7 @@ public:
 		{
 			for (int j = 0; j < LeaderBoardRecord[i].size(); ++j)
 			{
+				cout << i << " " << j << endl;
 				std::string tmp = to_string(j + 1);
 				RankTexture[i][j].loadFromRenderedText(tmp, TextColor, 36);
 				StepTexture[i][j].loadFromRenderedText(to_string(LeaderBoardRecord[i][j].step), TextColor, 36);
@@ -201,6 +202,7 @@ public:
 
 	void render(ModeLeaderBoard mode)
 	{
+		SDL_RenderClear(gRenderer);
 		LBTexture.render(0, 0);
 		for (int i = 0; i < ModeTotal; ++i)
 		{
@@ -214,6 +216,7 @@ public:
 			NameTexture[mode][Current + i].render(325, 272 + 78 * i);
 			TimeTexture[mode][Current + i].render(782, 272 + 78 * i);
 		}
+		SDL_RenderPresent(gRenderer);
 	}
 	void HandleEvent()
 	{
@@ -229,16 +232,20 @@ public:
 				Quit = true;
 				outGame = true;
 			}
-			if (e.wheel.y < 0)
+			else if (e.type == SDL_MOUSEWHEEL)
 			{
-				if (Current + 1 < MAX - 4)
-					++Current;
+				if (e.wheel.y < 0)
+				{
+					if (Current + 1 < LeaderBoardRecord[CurrentMode].size() - 4)
+						++Current;
+				}
+				else if (e.wheel.y > 0)
+				{
+					if (Current - 1 >= 0)
+						--Current;
+				}
 			}
-			else if (e.wheel.y > 0)
-			{
-				if (Current - 1 >= 0)
-					--Current;
-			}
+			
 			if (e.type == SDL_MOUSEBUTTONDOWN)
 			{
 				Back.HandleEvent(&e);
@@ -292,7 +299,6 @@ public:
 			LBTexture.render(0, 0);
 			HandleEvent();
 			render(ModeLeaderBoard(CurrentMode));
-			SDL_RenderPresent(gRenderer);
 		}
 	}
 };

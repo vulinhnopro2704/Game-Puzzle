@@ -39,6 +39,11 @@ extern TTF_Font* gFont;
 //Kiểm tra thoát game
 extern bool outGame;
 
+//Kiểm tra show number
+extern bool ShowNumber;
+extern int Volume;
+extern bool SoundOn;
+
 //Screen
 
 const int SCREEN_WIDTH = 1280;
@@ -52,7 +57,8 @@ const int COLOR_KEY_B = 180;
 const int FPS = 60;
 const int frameDelay = 1000 / FPS;
 
-const int TOTAL_IMAGE = 4;
+extern int TOTAL_IMAGE;
+const int TOTAL_SOUNDTRACK = 4;
 
 //Button constants
 const int BUTTON_WIDTH = 470;

@@ -109,6 +109,15 @@ Login::~Login()
     }
 }
 
+void Login::RenderAnnounce(string s)
+{
+    Alert.render((SCREEN_WIDTH - Alert.getWidth()) / 2, (SCREEN_HEIGHT - Alert.getHeight()) / 2);
+    LAnnounce.loadFromRenderedText(s, { 0xFF, 0xFF, 0xFF, 0xFF }, 20);
+    LAnnounce.render((SCREEN_WIDTH - LAnnounce.getWidth()) / 2, SCREEN_HEIGHT / 2 + 36);
+    SDL_RenderPresent(gRenderer);
+    SDL_Delay(1000);
+}
+
 bool Login::Register()
 {
     
@@ -125,6 +134,10 @@ bool Login::LoadFromFile()
 {
     if (!Llogin.loadFromFile("IMG//Login//Login.png")) return false;
     else if (!Lregister.loadFromFile("IMG//Login//Register.png")) return false;
+    else if (!Alert.loadFromFile("IMG//Login//Alert.png", false))
+    {
+        return false;
+    }
     return true;
 }
 
@@ -213,24 +226,24 @@ bool Login::HandleEvent()
                                     {
                                         if (Pass == Account[Name].first)
                                         {
-                                            cout << "Dang nhap thanh cong\n";
+                                            RenderAnnounce("Dang nhap thanh cong");
                                             Lquit = true;
                                         }
                                         else
                                         {
-                                            cout << "Sai mat khau, vui long nhap lai!\n";
+                                            RenderAnnounce("Sai mat khau, vui long nhap lai!");
 
                                         }
                                     }
                                     else
                                     {
                                         CheckA.erase(Name);
-                                        cout << "Tai khoan khong ton tai!\n";
+                                        RenderAnnounce("Tai khoan khong ton tai!");
                                     }
                                 }
                                 else
                                 {
-                                    cout << "Vui long nhap mat khau!\n";
+                                    RenderAnnounce("Vui long nhap mat khau!");
                                 }
                                 
                                 
@@ -313,33 +326,33 @@ bool Login::HandleEvent()
                                 {
                                     if (Pass == Account[Name].first)
                                     {
-                                        cout << "Dang nhap thanh cong\n";
+                                        RenderAnnounce("Dang nhap thanh cong");
                                         Lquit = true;
                                     }
                                     else
                                     {
-                                        cout << "Sai mat khau, vui long nhap lai!\n";
+                                        RenderAnnounce("Sai mat khau, vui long nhap lai!");
 
                                     }
                                 }
                                 else
                                 {
                                     CheckA.erase(Name);
-                                    cout << "Tai khoan khong ton tai!\n";
+                                    RenderAnnounce("Tai khoan khong ton tai!");
                                 }
 
                             }
                             else if(Name.size())
                             {
-                                cout << "Vui long nhap mat khau\n";
+                                RenderAnnounce("Vui long nhap mat khau");
                             }
                             else if (Pass.size())
                             {
-                                cout << "Vui long nhap tai khoan\n";
+                                RenderAnnounce("Vui long nhap tai khoan");
                             }
                             else
                             {
-                                cout << "Vui long nhap tai khoan va mat khau\n";
+                                RenderAnnounce("Vui long nhap tai khoan va mat khau");
                             }
                         }
                     }
@@ -510,18 +523,18 @@ bool Login::HandleEvent()
                                 if (CheckA[RName])
                                 {
 
-                                    cout << "Tai khoan da ton tai!\n";
+                                    RenderAnnounce("Tai khoan da ton tai!");
                                 }
                                 else
                                 {
                                     if (RPass != RCPass)
                                     {
-                                        cout << "Mat khau khong trung khop\n";
+                                        RenderAnnounce("Mat khau khong trung khop");
                                         CheckA.erase(RName);
                                     }
                                     else
                                     {
-                                        cout << "Tao tai khoan thanh cong!\n";
+                                        RenderAnnounce("Tao tai khoan thanh cong!");
                                         CheckA[RName] = true;
                                         Account[RName] = { RPass, CountAccount };
                                         TaoFile(to_string(CountAccount), to_string(3));
@@ -537,15 +550,15 @@ bool Login::HandleEvent()
                             }
                             else if (!RName.size())
                             {
-                                cout << "Vui long nhap ten tai khoan muon tao\n";
+                                RenderAnnounce("Vui long nhap ten tai khoan muon tao");
                             }
                             else if (!RPass.size())
                             {
-                                cout << "Vui long nhap mat khau!\n";
+                                RenderAnnounce("Vui long nhap mat khau!");
                             }
                             else if (!RCPass.size())
                             {
-                                cout << "Vui long nhap lai mat khau!\n";
+                                RenderAnnounce("Vui long nhap lai mat khau!");
                             }
                             
                         }
@@ -666,14 +679,14 @@ void Login::Render()
     SDL_RenderClear(gRenderer);
     if (Log)
     {
-        Llogin.render((SCREEN_WIDTH - Llogin.getWidth()) / 2, (SCREEN_HEIGHT - Llogin.getHeight()) / 2);
+        Llogin.render(0, 0);
         LNinputTextTexture.render(450, 273);
         LPinputTextTexture.render(450, 378);
     }
 
     else
     {
-        Lregister.render((SCREEN_WIDTH - Llogin.getWidth()) / 2, (SCREEN_HEIGHT - Lregister.getHeight()) / 2);
+        Lregister.render(0, 0);
         RNinputTextTexture.render(450, 220);
         RPinputTextTexture.render(450, 325);
         RCPinputTextTexture.render(450, 435);

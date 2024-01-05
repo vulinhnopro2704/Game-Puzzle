@@ -8,7 +8,6 @@ using namespace std;
 
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
-
 TTF_Font* gFont = NULL;
 
 bool isUSE = true;
@@ -22,11 +21,14 @@ bool SoundOn = true;
 int Volume = 126;
 int TOTAL_IMAGE = 4;
 int NumCurrent = 0;
+int OrderSoundtrack = 0;
+int OrderSoundeffect = 0;
+
 bool GUEST = false;
 int main(int argc, char* argv[])
 {
     
-    while (1)
+    while (!outGame)
     {
         Login user;
         user.Run();

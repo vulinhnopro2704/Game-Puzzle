@@ -134,12 +134,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="About.cpp" />
     <ClCompile Include="CommonFunc.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Gameplay.cpp" />
     <ClCompile Include="GetPlayerName.cpp" />
     <ClCompile Include="Help.cpp" />
     <ClCompile Include="LButton.cpp" />
+    <ClCompile Include="Login.cpp" />
     <ClCompile Include="LTexture.cpp" />
     <ClCompile Include="LTimer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -149,6 +151,7 @@
     <ClCompile Include="TextureManagercpp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="About.h" />
     <ClInclude Include="CommonFunc.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Gameplay.h" />
@@ -156,6 +159,7 @@
     <ClInclude Include="Help.h" />
     <ClInclude Include="LButton.h" />
     <ClInclude Include="LeaderBoard.h" />
+    <ClInclude Include="Login.h" />
     <ClInclude Include="LTexture.h" />
     <ClInclude Include="LTimer.h" />
     <ClInclude Include="Main_Menu.h" />

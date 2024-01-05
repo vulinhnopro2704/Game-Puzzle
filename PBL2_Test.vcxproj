@@ -147,6 +147,7 @@
     <ClInclude Include="LTimer.h" />
     <ClInclude Include="Main_Menu.h" />
     <ClInclude Include="MenuStart.h" />
+    <ClInclude Include="Setting.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Winner.h" />
   </ItemGroup>
@@ -165,6 +166,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Main_Menu.cpp" />
     <ClCompile Include="MenuStart.cpp" />
+    <ClCompile Include="Setting.cpp" />
     <ClCompile Include="TextureManagercpp.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

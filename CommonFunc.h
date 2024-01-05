@@ -72,6 +72,7 @@ extern bool isUSE;
 extern bool isInit;
 
 extern int NumCurrent;
+extern bool GUEST;
 //Trạng thái của button
 enum LButtonSprite
 {

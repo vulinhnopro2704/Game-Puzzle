@@ -8,7 +8,7 @@ MainMenu::MainMenu(string PlayerName) {
     this->PlayerName = PlayerName;
 }
 
-int countPNGFiles(const wchar_t* folderPath) {
+int MainMenu::countPNGFiles(const wchar_t* folderPath) {
     WIN32_FIND_DATAW findFileData;
     HANDLE hFind = INVALID_HANDLE_VALUE;
     int pngFileCount = 0;
@@ -156,20 +156,6 @@ void MainMenu::run() {
                     switch (i) {
                     case BUTTON_START:
                     {
-                        GetPlayerName GetPlayerName;
-                        if (CanGetName)
-                        {
-                            if (!GetPlayerName.run())
-                            {
-                                cout << "Player Name is Empty " << endl;
-                                break;
-                            }
-                            else
-                            {
-                                CanGetName = false;
-                                PlayerName = GetPlayerName.getInputText();
-                            }
-                        }
                         isBackButtonClick = false;
                         // Thực hiện hành động khi nút PLAY_BUTTON được nhấn
                         MenuStart startgame(PlayerName);

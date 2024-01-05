@@ -16,13 +16,36 @@ MenuStart::MenuStart(string PlayerName) : isRunning(true), MenuStartButton(vecto
     isOut = false;
     this->PlayerName = PlayerName;
     const wchar_t* folderPath = L"Data//MenuImage";
-    TmpImages.resize(countPNGFiles(folderPath));
+    TmpImages.resize(MScountPNGFiles(folderPath));
     MenuImage.resize(TmpImages.size());
     TOTAL_IMAGE = TmpImages.size();
 }
 
 MenuStart::~MenuStart() {
     close();
+}
+
+int MenuStart::MScountPNGFiles(const wchar_t* folderPath)
+{
+    WIN32_FIND_DATAW findFileData;
+    HANDLE hFind = INVALID_HANDLE_VALUE;
+    int pngFileCount = 0;
+    std::wstring searchPath = std::wstring(folderPath) + L"\\*.png";
+
+    hFind = FindFirstFileW(searchPath.c_str(), &findFileData);
+    if (hFind != INVALID_HANDLE_VALUE) {
+        do {
+            if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+                pngFileCount++;
+            }
+        } while (FindNextFileW(hFind, &findFileData) != 0);
+        FindClose(hFind);
+    }
+    else {
+        std::wcerr << L"Không thể mở thư mục hoặc không có file .png!" << std::endl;
+    }
+
+    return pngFileCount;
 }
 
 LTexture TypeMenu;
@@ -135,6 +158,7 @@ void MenuStart::close() {
 
 bool MenuStart::CheckNonFinishGame(int n)
 {
+    if (GUEST) return false;
     string tenfile = "ContinueGame//puzzle";
     string N = to_string(n);
     tenfile += N + ".txt";

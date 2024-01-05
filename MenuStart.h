@@ -11,6 +11,7 @@ private:
     LTexture HTexture;
     vector<LTexture> MenuStartButton;
     LTexture SolveMode;
+    std::vector<LTexture> TmpImages;
     bool isRunning;
     bool isChooseMode;
     bool isOut;
@@ -39,6 +40,7 @@ public:
     MenuStart();
     MenuStart(string PlayerName);
     ~MenuStart();
+    int countPNGFiles(const wchar_t* folderPath);
     bool init();
     bool loadMedia();
     void close();

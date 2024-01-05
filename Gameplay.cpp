@@ -766,7 +766,7 @@ void Gameplay::SetNguoc(int height)
 }
 void Gameplay::SetUpGame(int height)
 {
-    setA();
+    /*setA();
     if (ContinueGame)
     {
         Height = height;
@@ -774,7 +774,8 @@ void Gameplay::SetUpGame(int height)
         ContinueGame = false;
         Mode = 1;
     }
-    else if (Mode == 1)
+    else */
+    if (Mode == 1)
         Random(height);
     else if (Mode == 2)
         SetNguoc(height);

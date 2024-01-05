@@ -1,6 +1,7 @@
 ﻿#include "Main_Menu.h"
 #include "Winner.h"
 #include "LeaderBoard.h"
+#include "Setting.h"
 
 using namespace std;
 
@@ -15,6 +16,10 @@ int Order = 0;
 int Mode = -1;
 bool isInit = false;
 bool outGame = false;
+bool ShowNumber = true;
+bool SoundOn = true;
+int Volume = 126;
+int TOTAL_IMAGE = 4;
 
 int main(int argc, char* argv[])
 {
@@ -42,8 +47,8 @@ int main(int argc, char* argv[])
 //{
 //	MainMenu b;
 //	b.init();
-//	LeaderBoard a;
-//	a.run();
+//	Setting a;
+//	a.Run();
 //	return 0;
 //}
 

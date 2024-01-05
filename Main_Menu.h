@@ -9,6 +9,7 @@
 #include "MenuStart.h"
 #include "LeaderBoard.h"
 #include "GetPlayerName.h"
+#include "Setting.h"
 
 class MainMenu {
 public:

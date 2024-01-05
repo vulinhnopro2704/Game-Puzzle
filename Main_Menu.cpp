@@ -7,6 +7,27 @@ MainMenu::MainMenu() {
     CanGetName = true;
 }
 
+int countPNGFiles(const wchar_t* folderPath) {
+    WIN32_FIND_DATAW findFileData;
+    HANDLE hFind = INVALID_HANDLE_VALUE;
+    int pngFileCount = 0;
+    std::wstring searchPath = std::wstring(folderPath) + L"\\*.png";
+
+    hFind = FindFirstFileW(searchPath.c_str(), &findFileData);
+    if (hFind != INVALID_HANDLE_VALUE) {
+        do {
+            if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+                pngFileCount++;
+            }
+        } while (FindNextFileW(hFind, &findFileData) != 0);
+        FindClose(hFind);
+    }
+    else {
+        std::wcerr << L"Không thể mở thư mục hoặc không có file .png!" << std::endl;
+    }
+
+    return pngFileCount;
+}
 
 MainMenu::~MainMenu() {
     //close();
@@ -104,9 +125,11 @@ void MainMenu::run() {
             return;
         }
     }
+
     if (!loadMedia()) {
         return;
     }
+
     bool isBackButtonClick = false;
     SDL_Event e;
     while (!mQuit && !outGame) {
@@ -116,7 +139,14 @@ void MainMenu::run() {
                 outGame = true;
                 isBackButtonClick = false;
             }
-
+            if (e.type == SDL_MOUSEBUTTONDOWN)
+            {
+                if (e.motion.x > 130 && e.motion.x < 210 && e.motion.y > 20 && e.motion.y < 82)
+                {
+                    Setting S;
+                    S.Run();
+                }
+            }
             for (int i = 0; i < TOTAL_BUTTONS; ++i) {
                 gButtons[i].HandleEvent(&e);
                 // Xác định nút nào được nhấn và thực hiện tác vụ tương ứng

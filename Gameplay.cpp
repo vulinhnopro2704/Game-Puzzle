@@ -7,7 +7,7 @@
 LTexture Shownumber[36];
 LTexture ButtonBack, ButtonReload, ButtonAutoRun, ButtonMode, StepTexture, SolveMode, LoadingImage, FrameLoadingImage;
 LButton gButtonBack, gButtonReload, gButtonAutoRun;
-
+LTexture Loading, Waiting;
 SDL_Rect ButtonReloadRect[] = { {0, 0, 142, 142}, {0, 175, 142, 142}, {0,350 , 142, 142} };
 SDL_Rect ButtonBackRect[] = { {0, 0, 156, 156}, {0, 180, 156, 156}, {0, 361, 156, 156} };
 SDL_Rect ButtonAutoRunRect[] = { {0, 0, 327, 65}, {0, 182, 327, 65}, {0, 356, 327, 65} };
@@ -30,12 +30,6 @@ int timeToSeconds(std::string timeStr) {
     seconds = timeStr.back() - '0' + (timeStr[timeStr.size() - 2] - '0') * 10;
     int totalSeconds = minutes * 60 + seconds;
     return totalSeconds;
-}
-
-void Gameplay::SetInitialStatus()
-{
-    res = 1;
-    UsedtoPressAutoRun = false;
 }
 
 bool Gameplay::LoadMedia() 
@@ -80,6 +74,14 @@ bool Gameplay::LoadMedia()
     {
         success = false;
     }
+    else if (!Loading.loadFromFile("Data//Loading//Loading.png"))
+    {
+        success = false;
+    }
+    else if (!Waiting.loadFromFile("Data//Loading//Waiting.png"))
+    {
+        success = false;
+    }
     string sound = "Music//Soundtrack" + to_string(OrderSoundtrack) + ".mp3";
     if (!(gSoundTrack = Mix_LoadMUS(sound.c_str())))
     {
@@ -87,7 +89,6 @@ bool Gameplay::LoadMedia()
         success = false;
     }
     sound = "Music//Soundeffect" + to_string(OrderSoundeffect) + ".wav";
-    cout << sound << endl;
     if (!(gSlide = Mix_LoadWAV(sound.c_str())))
     {
         printf("Failed to load gSlide sound effect! SDL_mixer Error: %s\n", Mix_GetError());
@@ -112,6 +113,22 @@ std::string millisecondsToTimeString(Uint32 milliseconds) {
 
     return mm + " : " + ss;
 }
+double Angle = 0.0; //Góc xoay
+int tmp = 0;
+void LoadingScreen()
+{
+    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_RenderClear(gRenderer);
+    Loading.render(0, 0);
+    if (tmp == 30)
+    {
+        Angle = int(Angle + 30.0) % 360;
+        tmp = 0;
+    }
+    else ++tmp;
+    Waiting.render(587, 310, NULL, Angle);
+    SDL_RenderPresent(gRenderer);
+}
 
 void Gameplay::CheckRand()
 {
@@ -135,6 +152,7 @@ void Gameplay::Random(int height)
     //Hàm random + tính tọa độ ảnh
     Height = height;
     while (1) {
+        LoadingScreen();
         int tam = 0;
         check = 0;
         b.resize(n * n);
@@ -160,15 +178,15 @@ void Gameplay::Random(int height)
 
 void Gameplay::display(vector<vector<int>> a)
 {
-    //Hàm in ra màn hình
-    cnt = 1;
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= n; j++) {
-            printf("%3d ", a[i][j]);
-            if (a[i][j] != Goal[i][j]) cnt = 0;
-        }
-        cout << endl;
-    }
+    ////Hàm in ra màn hình
+    //cnt = 1;
+    //for (int i = 1; i <= n; i++) {
+    //    for (int j = 1; j <= n; j++) {
+    //        printf("%3d ", a[i][j]);
+    //        if (a[i][j] != Goal[i][j]) cnt = 0;
+    //    }
+    //    cout << endl;
+    //}
 }
 
 bool isMoved = false;
@@ -291,7 +309,7 @@ int Gameplay::Heuristic(vector<vector<int>> a)
 
 void Gameplay::KhoiTao()
 {
-    cout << "BYE\n";
+    /*cout << "BYE\n";*/
     // Hàm khởi tạo thêm vào FRINGE các trạng thái hợp lệ xung quanh ô trống
     pair<int, int> p = Pos(0, a);
     FRINGE[0].first = a;
@@ -363,7 +381,7 @@ void Gameplay::AuToRun(bool &CheckQuit)
     SDL_Rect LoadingImageRect = { 0, 0, 454, 132 };
     LoadingImage.render((SCREEN_WIDTH - 454) / 2, (SCREEN_HEIGHT - 132) / 2, &LoadingImageRect);
     SDL_RenderPresent(gRenderer);
-    cout << "HELLO\n";
+   /* cout << "HELLO\n";*/
     display(a);
     //Khởi tạo trạng thái ban đầu.
     KhoiTao();
@@ -408,7 +426,7 @@ void Gameplay::AuToRun(bool &CheckQuit)
         int g = OPEN.top().second.first;
         // lấy ra vị trí của trạng thái có chi phí thấp nhất trong OPEN
         l = OPEN.top().second.second;
-        cout << "He: " << OPEN.top().first << endl;
+        /*cout << "He: " << OPEN.top().first << endl;*/
         present = min(present, OPEN.top().first);
         // Cho trạng thái hiện tại đang xét là trạng thái tối ưu (vị trí l đã tính)
         Curent = FRINGE[l].first;
@@ -491,7 +509,7 @@ void Gameplay::AuToRun(bool &CheckQuit)
             KQ.push_back(FATHER[l]);
             l = FATHER[l];
         }
-        cout << "KQ: " << KQ.size() << endl;
+        /*cout << "KQ: " << KQ.size() << endl;*/
         index = KQ.size();
         FrameLoadingImage.render(292, 119);
         LoadingImageRect = { 0, 9 * 140, 454, 132 };
@@ -521,9 +539,11 @@ void Gameplay::setA()
     //Đặt tráng thái ban đầu của vecto a
     for (int i = 0; i <= n + 1; i++) {
         for (int j = 0; j <= n + 1; j++) {
+            LoadingScreen();
             a[i][j] = n * n;
         }
     }
+    SDL_Delay(200);
 }
 
 void Gameplay::setGoal()
@@ -637,7 +657,7 @@ void Gameplay::Infile()
     {
         tenfile += to_string(NumCurrent) + ".txt";
     }
-    cout << "Infile run" << endl;
+   /* cout << "Infile run" << endl;*/
 
     ifstream inFile(tenfile);
     int status;
@@ -655,7 +675,7 @@ void Gameplay::Infile()
                 if (i == 1 || i == 2) timeplay += ' ';
             }
 
-            cout << "step: " << step << "\ntimeplay: " << timeplay << endl;
+            /*cout << "step: " << step << "\ntimeplay: " << timeplay << endl;*/
             for (int i = 1; i <= n; i++)
             {
                 for (int j = 1; j <= n; j++)
@@ -674,13 +694,13 @@ void Gameplay::Infile()
             inFile.close();
         }
     }
-    display(a);
+    /*display(a);
     cout << endl;
     for (int i = 0; i < n * n; i++)
     {
         cout << posIMG[i].first << " " << posIMG[i].second << endl;
     }
-    cout << Poszero.first << " " << Poszero.second;
+    cout << Poszero.first << " " << Poszero.second;*/
 }
 
 bool Gameplay::AddScoretoFile()
@@ -691,11 +711,11 @@ bool Gameplay::AddScoretoFile()
     if (file.is_open()) {
         file << PlayerName << "," << timeplay << "," << step << std::endl;
         file.close();
-        std::cout << "Data has been saved to file " << filename << std::endl;
+        /*std::cout << "Data has been saved to file " << filename << std::endl;*/
         return true;
     }
     else {
-        std::cerr << "Unable to open file to save data." << std::endl;
+        /*std::cerr << "Unable to open file to save data." << std::endl;*/
         return false;
     }
 }
@@ -792,6 +812,7 @@ std::vector<SDL_Texture*> CutTextureIntoPieces(SDL_Texture* texture, int n) {
 
 void Gameplay::SetNguoc(int height)
 {
+    LoadingScreen();
     Height = height;
     int tmp = n * n;
     for (int i = 1; i <= n; i++)
@@ -807,9 +828,10 @@ void Gameplay::SetNguoc(int height)
             if (a[i][j] == 0) Poszero = { i, j };
         }
     }
-    CheckRand();
-    if ((check + Poszero.first * (n % 2 + 1)) % 2 == 0) cout << "Duoc\n";
-    else cout << "Khong the giai\n";
+    /*if ((check + Poszero.first * (n % 2 + 1)) % 2 == 0) cout << "Duoc\n";
+    else cout << "Khong the giai\n";*/
+    LoadingScreen();
+    SDL_Delay(300);
 }
 
 void Gameplay::SetUpGame(int height)
@@ -823,9 +845,17 @@ void Gameplay::SetUpGame(int height)
         Mode = 1;
     }
     else if (Mode == 1)
+    {
         Random(height);
+        timeplay = "";
+    }
     else if (Mode == 2)
+    {
         SetNguoc(height);
+        timeplay = "";
+    }
+    LoadingScreen();
+    SDL_Delay(300);
    /* cout << "Hello\n";
     cout << Poszero.first << " " << Poszero.second << endl;
     display(a);
@@ -913,7 +943,7 @@ void Gameplay::handleEvents() {
                         if (!timer.isStarted())
                         {
                             timer.start(timeToSeconds(timeplay));
-                            cout << "timeplay: " << timeplay << endl;
+                            /*cout << "timeplay: " << timeplay << endl;*/
                         }
                             
                         else if (timer.isPaused())
@@ -937,11 +967,11 @@ void Gameplay::handleEvents() {
                     if (!checksolve)
                     {
                         ++step;
-                        cout << timeplay << " " << timeToSeconds(timeplay) << endl;
+                        /*cout << timeplay << " " << timeToSeconds(timeplay) << endl;*/
                         if (!timer.isStarted())
                         {
                             timer.start(timeToSeconds(timeplay));
-                            cout << "timeplay: " << timeplay << endl;
+                            /*cout << "timeplay: " << timeplay << endl;*/
                         }                            
                         else if (timer.isPaused())
                         {
@@ -1040,15 +1070,15 @@ void Gameplay::handleEvents() {
             isRunning = false;
             isPressBack = true;
             Outfile();
+            timeplay = "";
             if (timer.isStarted() && !timer.isPaused())
             {
-                timer.pause();
+                timer.stop();
             }
-            SetInitialStatus();
         }
         if (!checksolve && !CheckGoal(a))
         {
-            cout << x << " " << y << endl;
+            /*cout << x << " " << y << endl;*/
              // Tính toán xem vị trí click đang nằm ở ô nào ( đưa về vị trí lúc đầu ta xét để dễ tính )
              int P = checkPos({ x, y });
              if (P)
@@ -1092,10 +1122,10 @@ void Gameplay::SolveGame()
         AuToRun(CheckQuit);
         if (CheckQuit)
         {
-            cout << "Da thoat\n";
+            /*cout << "Da thoat\n";*/
             return;
         }
-        else cout << "Sai r\n";
+        /*else cout << "Sai r\n";*/
 
     }
     checkmove = false;
@@ -1156,7 +1186,7 @@ void Gameplay::SolveGame()
         }
         // Tìm vị trị trong mảng KQ và cập nhật lại các ảnh của trạng thái đang xét đến
         int x = FRINGE[KQ[index - 1]].second;
-        cout << index << " " << x << endl;
+        /*cout << index << " " << x << endl;*/
         //display(a);
         Solve(Pos(x, a));
         if (isMoved)
@@ -1209,7 +1239,7 @@ void Gameplay::render() {
     if (timer.isStarted())
         timeplay = millisecondsToTimeString(timer.getTicks());
     else if (timeplay == "") timeplay = "00 : 00";
-    cout << "timeplay:  " << timeplay << endl;
+    /*cout << "timeplay:  " << timeplay << endl;*/
     timing.loadFromRenderedText(timeplay, { 0xFF, 0xFF, 0xFF }, 20);
     timing.render(92, 28);
     ButtonMode.render(282, 6, &ButtonModeRect[n - 3]);
@@ -1232,7 +1262,7 @@ void Gameplay::render() {
         {
             if (!AddScoretoFile())
             {
-                cout << "Khong the luu diem vo file" << endl;
+               /* cout << "Khong the luu diem vo file" << endl;*/
             }
             LeaderBoard LB;
             int rank = LB.ReturnRank(ModeLeaderBoard(n - 3), { "Linh", timeplay, step });
@@ -1244,10 +1274,6 @@ void Gameplay::render() {
             {
                 PressReload();
                 isPressReload = false;
-            }
-            else if (isPressBack)
-            {
-                SetInitialStatus();
             }
             else WinnerScreenOff = true;
         }
@@ -1280,7 +1306,6 @@ void Gameplay::Play()
         render(); 
     }
     isPressBack = false;
-    cout << "End roi nha !!! " << endl;
 }
 
 void Gameplay::clean() {
@@ -1309,6 +1334,7 @@ void Gameplay::clean() {
 void Gameplay::Run() {
     if (LoadMedia())
     {
+        timeplay = "";
         WinnerScreenOff = false;
         SetUpGame(594);
         for (int i = 1; i <= n * n; ++i)

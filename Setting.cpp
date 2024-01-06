@@ -1,5 +1,7 @@
 ﻿#include "Setting.h"
 
+Mix_Music* backgroundMusic;
+
 int Setting::countPNGFiles(const wchar_t* folderPath) {
     WIN32_FIND_DATAW findFileData;
     HANDLE hFind = INVALID_HANDLE_VALUE;
@@ -22,9 +24,27 @@ int Setting::countPNGFiles(const wchar_t* folderPath) {
     return pngFileCount;
 }
 
+void Setting::DropScreen(string s)
+{
+    LTexture tmp;
+    tmp.loadFromRenderedText(s, { 0,0,0 }, 40);
+    DragAndDrop.render(0, 0);
+    tmp.render((SCREEN_WIDTH - tmp.getWidth()) / 2, SCREEN_HEIGHT / 2 - 20);
+    SDL_RenderPresent(gRenderer);
+    SDL_Delay(1500);
+}
+bool isDrag = false;
+
+//void Setting::DragScreen()
+//{
+//    isDrag = true;
+//    Drag.render(0, 0);
+//    SDL_RenderPresent(gRenderer);
+//}
+
 bool Setting::LoadFromFile()
 {
-    if (!LSetting.loadFromFile("Data//Setting//Setting.png", false))
+    if (!LSetting.loadFromFile("Data//Setting//Setting.png"))
     {
         return false;
     }
@@ -36,27 +56,35 @@ bool Setting::LoadFromFile()
     {
         return false;
     }
+    else if (!DragAndDrop.loadFromFile("Data//Loading//DragAndDrop.png"), false)
+    {
+        return false;
+    }
+    else if (!Drag.loadFromFile("Data//Loading//Drag.png"))
+    {
+        return false;
+    }
+    else if (!LVolume.loadFromFile("Data//Setting//Volume.png"))
+    {
+        //cout << "Loi here" << endl;
+        return false;
+    }
     return true;
 }
 
 void Setting::Render()
 {
-    if (!LImage.loadFromFile("Data//MenuImage//MenuImage" + to_string(OrderImage) + ".png", false))
-    {
-        cout << "Can't Load Menu Image " << endl;
-        return;
-    }
-    LImage.Resize(238, 238);
     SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(gRenderer);
+    int tmpx = 1.0 * 343 - (1.0 * 128 - 1.0 * Volume) / 128 * 425 * 1.0;
+    //cout << Volume << "  " << tmpx << endl;
+    LVolume.render(tmpx, 271);
+    ////cout << 343 - (1 - Volume / 128) * 425 << endl;
     LSetting.render(0, 0);
     LShowNumber.render(951, 194, &ShowNumberRect[ShowNumber]);
     LSound.render(827, 283, &SoundRect[SoundOn]);
-    LSoundTrackNumber.loadFromRenderedText("Sound " + to_string(OrderSoundTrack), { 0xC5, 0x5A, 0x11, 0xFF }, 30);
+    LSoundTrackNumber.loadFromRenderedText("Sound " + to_string(OrderSoundtrack), { 0xC5, 0x5A, 0x11, 0xFF }, 30);
     LSoundTrackNumber.render(372, 196);
-
-    LImage.render(795, 429);
-
     SDL_RenderPresent(gRenderer);
 }
 
@@ -69,21 +97,21 @@ void Setting::HandleEvent()
             Quit = true;
             outGame = true;
         }
-        else if (e.type == SDL_DROPFILE) {
+        if (e.type == SDL_DROPFILE) {
             // Đọc file ảnh từ đường dẫn được kéo thả
             SDL_Surface* loadedSurface = IMG_Load(e.drop.file);
             SDL_free(e.drop.file);
             if (loadedSurface == nullptr) {
-                std::cerr << "Không thể tải ảnh!" << std::endl;
+                DropScreen("Khong the tai anh!");
                 return;
             }
             // Lưu file ảnh dưới định dạng PNG
             std::string newImagePath = "Data//MenuImage//MenuImage" + to_string(TOTAL_IMAGE) + ".png";
             TOTAL_IMAGE++;
             if (IMG_SavePNG(loadedSurface, newImagePath.c_str()) != 0) {
-                std::cerr << "Lỗi khi lưu file!" << std::endl;
+                DropScreen("Loi khi luu file!");
             }
-            else cout << "Luu  anh thanh cong" << endl;
+            DropScreen("Luu  anh thanh cong");
              SDL_FreeSurface(loadedSurface);
         }
         else if (e.type == SDL_MOUSEBUTTONDOWN)
@@ -99,13 +127,28 @@ void Setting::HandleEvent()
                 //Đổi nhạc
                 if (e.motion.x > 328 && e.motion.x < 580)
                 {
+                    if (backgroundMusic != NULL) {
+                        Mix_FreeMusic(backgroundMusic);
+                        backgroundMusic = NULL;
+                    }
                     if (e.motion.x > 543)
-                        OrderSoundTrack = (OrderSoundTrack + 1) % TOTAL_SOUNDTRACK;
+                    {
+                        OrderSoundtrack = (OrderSoundtrack + 1) % TOTAL_SOUNDTRACK;
+                        string tmp = "Music//Soundtrack" + to_string(OrderSoundtrack) + ".mp3";
+                    }
                     else if (e.motion.x < 360)
                     {
-                        OrderSoundTrack = (OrderSoundTrack - 1);
-                        if (OrderSoundTrack < 0) OrderSoundTrack = 0;
+                        OrderSoundtrack = (OrderSoundtrack - 1);
+                        if (OrderSoundtrack < 0) OrderSoundtrack = TOTAL_SOUNDTRACK - 1;
                     }
+                    string tmp = "Music//Soundtrack" + to_string(OrderSoundtrack) + ".mp3";
+                    Mix_HaltMusic();
+
+                    backgroundMusic = Mix_LoadMUS(tmp.c_str());
+                    if (backgroundMusic == NULL) {
+                        printf("Failed to load music! SDL_Mixer Error: %s\n", Mix_GetError());
+                    }
+                    Mix_PlayMusic(backgroundMusic, -1);
                 }
                 //Bật/tắt Hiện số trên ảnh
                 else if (e.motion.x > 931 && e.motion.x < 1040)
@@ -121,6 +164,7 @@ void Setting::HandleEvent()
                 {
                     SoundOn = (!SoundOn);
                     if (!SoundOn) Volume = 0;
+                    else Volume = 128;
                     // Đặt âm lượng cho Mix_Chunk (hiệu ứng âm thanh)
                     Mix_Volume(-1, Volume); // Đặt âm lượng cho tất cả các kênh hiệu ứng âm thanh
 
@@ -140,18 +184,6 @@ void Setting::HandleEvent()
                     Mix_VolumeMusic(Volume); // Đặt âm lượng cho nhạc nền
                 }
             }
-            else if (e.motion.y > 502 && e.motion.y < 563)
-            {
-                if (e.motion.x > 718 && e.motion.x < 780)
-                {
-                    OrderImage = (OrderImage + 1) % TOTAL_IMAGE;
-                }
-                else if (e.motion.x > 1045 && e.motion.x < 1100)
-                {
-                    OrderImage = (OrderImage - 1);
-                    if (OrderImage < 0) OrderImage = TOTAL_IMAGE - 1;
-                }
-            }
         }
     }  
 }
@@ -160,12 +192,28 @@ void Setting::Run()
 {
     if (!LoadFromFile())
     {
-        cout << "Can't Open Setting!!!" << endl;
+        //cout << "Can't Open Setting!!!" << endl;
         return;
     }
     while (!Quit)
     {
         HandleEvent();
         Render();
+    }
+}
+
+Setting::~Setting() {
+    LSetting.free();
+    LVolume.free();
+    LSound.free();
+    LShowNumber.free();
+    LSoundTrackNumber.free();
+    LLoadNewImage.free();
+    DragAndDrop.free();
+    Drag.free();
+
+    if (backgroundMusic != nullptr) {
+        Mix_FreeMusic(backgroundMusic);
+        backgroundMusic = nullptr;
     }
 }

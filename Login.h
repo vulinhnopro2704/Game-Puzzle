@@ -50,6 +50,7 @@ public:
 	void Render();
 	void Run();
 	bool Init();
+	void CleanUp();
 	string getName();
 	void TaoFile(string num, string type);
 	int getNumFile();

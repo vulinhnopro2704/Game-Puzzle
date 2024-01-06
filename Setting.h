@@ -7,15 +7,15 @@ class Setting
 private:
 	LTexture LSetting;
 	LTexture LVolume;
-	LTexture LImage;
 	LTexture LSound;
 	LTexture LShowNumber;
 	LTexture LSoundTrackNumber;
 	LTexture LLoadNewImage;
+	LTexture DragAndDrop;
+	LTexture Drag;
 	SDL_Rect SoundRect[2];
 	SDL_Rect ShowNumberRect[2];
 	int OrderImage;
-	int OrderSoundTrack;
 	bool Quit = false;
 	SDL_Event e;
 public:
@@ -28,15 +28,12 @@ public:
 		TOTAL_IMAGE = countPNGFiles(folderPath);
 	}
 	int countPNGFiles(const wchar_t* folderPath);
+	void DropScreen(string s);
+	void DropScreen();
+	void DragScreen();
 	bool LoadFromFile();
 	void Render();
 	void HandleEvent();
 	void Run();
-	~Setting() {
-		LSetting.free();
-		LVolume.free();
-		LImage.free();
-		LSound.free();
-		LShowNumber.free();
-	}
+	~Setting();
 };

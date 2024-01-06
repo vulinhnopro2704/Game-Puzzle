@@ -57,11 +57,11 @@ bool LTexture::loadFromFile(std::string path, bool isSetColorKey)
 }
 
 #if defined(SDL_TTF_MAJOR_VERSION)
-bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor, int FontSize)
+bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor, int FontSize, string FontPath)
 {
 	//Get rid of preexisting texture
 	free();
-	gFont = TTF_OpenFont("Font//Bungee-Regular.ttf", FontSize);
+	gFont = TTF_OpenFont(FontPath.c_str(), FontSize);
 		//Render text surface
 		SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);
 		if (textSurface == NULL)

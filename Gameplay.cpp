@@ -58,27 +58,27 @@ bool Gameplay::LoadMedia()
     {
         success = false;
     }
-    else if (!Background.loadFromFile("IMG//PlayGame.PNG"))
+    else if (!Background.loadFromFile("IMG//PlayGame.PNG", false))
     {
         success = false;
     }
-    else if (!GoalImage.loadFromFile(imagePath))
+    else if (!GoalImage.loadFromFile(imagePath, false))
     {
         success = false;
     }
-    else if (!LoadingImage.loadFromFile("IMG//Loading.png"))
+    else if (!LoadingImage.loadFromFile("IMG//Loading.png", false))
     {
         success = false;
     }
-    else if (!FrameLoadingImage.loadFromFile("IMG//FrameLoadingImage.png"))
+    else if (!FrameLoadingImage.loadFromFile("IMG//FrameLoadingImage.png", false))
     {
         success = false;
     }
-    else if (!Loading.loadFromFile("Data//Loading//Loading.png"))
+    else if (!Loading.loadFromFile("Data//Loading//Loading.png", false))
     {
         success = false;
     }
-    else if (!Waiting.loadFromFile("Data//Loading//Waiting.png"))
+    else if (!Waiting.loadFromFile("Data//Loading//Waiting.png", false))
     {
         success = false;
     }
@@ -377,12 +377,13 @@ void Gameplay::AuToRun(bool &CheckQuit)
     SDL_RenderFillRect(gRenderer, &FillRect);
     // Đặt lại chế độ blend về mặc định
     SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_NONE);
+
     FrameLoadingImage.render(292, 119);
     SDL_Rect LoadingImageRect = { 0, 0, 454, 132 };
     LoadingImage.render((SCREEN_WIDTH - 454) / 2, (SCREEN_HEIGHT - 132) / 2, &LoadingImageRect);
     SDL_RenderPresent(gRenderer);
    /* cout << "HELLO\n";*/
-    display(a);
+    /*display(a);*/
     //Khởi tạo trạng thái ban đầu.
     KhoiTao();
     // Curent là trạng thái đang xét hiện t ại
@@ -520,7 +521,7 @@ void Gameplay::AuToRun(bool &CheckQuit)
 
 void Gameplay::Clear()
 {
-    // Đặt isRunning thành false để kết thúc vòng lặp chính
+    // Đặt isRunning thành false để kết thúc vòng lặp chín
     isRunning = false;
     FATHER.clear();
     FRINGE.clear();
@@ -1332,16 +1333,16 @@ void Gameplay::clean() {
 
 
 void Gameplay::Run() {
+    for (int i = 1; i <= n * n; ++i)
+    {
+        Shownumber[i].loadFromRenderedText(to_string(i), { 71, 230, 173, 0xFF }, 32 - n * 2, "Font//NotoSansMono_ExtraCondensed-SemiBold.ttf");
+    }
+    Shownumber[0].loadFromRenderedText(to_string(n * n), { 71, 230, 173, 0xFF }, 32 - n * 2, "Font//NotoSansMono_ExtraCondensed-SemiBold.ttf");
     if (LoadMedia())
     {
         timeplay = "";
         WinnerScreenOff = false;
         SetUpGame(594);
-        for (int i = 1; i <= n * n; ++i)
-        {
-            Shownumber[i].loadFromRenderedText(to_string(i), { 0xFB, 0xBC, 0x04, 0xF0 }, 32 - n * 3);
-        }
-        Shownumber[0].loadFromRenderedText(to_string(n * n), { 0xFB, 0xBC, 0x04, 0xF0 }, 32 - n * 3);
         Play();
         Clear();
         clean();

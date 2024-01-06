@@ -66,7 +66,7 @@ bool Setting::LoadFromFile()
     }
     else if (!LVolume.loadFromFile("Data//Setting//Volume.png"))
     {
-        cout << "Loi here" << endl;
+        //cout << "Loi here" << endl;
         return false;
     }
     return true;
@@ -77,9 +77,9 @@ void Setting::Render()
     SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(gRenderer);
     int tmpx = 1.0 * 343 - (1.0 * 128 - 1.0 * Volume) / 128 * 425 * 1.0;
-    cout << Volume << "  " << tmpx << endl;
+    //cout << Volume << "  " << tmpx << endl;
     LVolume.render(tmpx, 271);
-    //cout << 343 - (1 - Volume / 128) * 425 << endl;
+    ////cout << 343 - (1 - Volume / 128) * 425 << endl;
     LSetting.render(0, 0);
     LShowNumber.render(951, 194, &ShowNumberRect[ShowNumber]);
     LSound.render(827, 283, &SoundRect[SoundOn]);
@@ -192,7 +192,7 @@ void Setting::Run()
 {
     if (!LoadFromFile())
     {
-        cout << "Can't Open Setting!!!" << endl;
+        //cout << "Can't Open Setting!!!" << endl;
         return;
     }
     while (!Quit)

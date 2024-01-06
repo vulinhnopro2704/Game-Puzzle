@@ -13,12 +13,12 @@ void LTimer::start(Uint32 time)
 {
 	//Start Timer
 	mStarted = true;
-
+	this->time = time;
 	//Unpause the timer
 	mPaused = false;
 
 	//Get Current clock time
-	mStartTicks = SDL_GetTicks() - time * 1000;
+	mStartTicks = SDL_GetTicks();
 	mPausedTicks = 0;
 }
 
@@ -67,7 +67,7 @@ void LTimer::unpause()
 Uint32 LTimer::getTicks()
 {
 	//The actual timer time
-	Uint32 timing = 0;
+	Uint32 timing = time * 1000;
 
 	//If the timer is running
 	if (mStarted)
@@ -76,7 +76,7 @@ Uint32 LTimer::getTicks()
 		if (mPaused)
 		{
 			//Return the number of ticks when the timer was paused
-			timing = mPausedTicks;
+			timing = mPausedTicks + time * 1000;
 		}
 		else
 		{
@@ -85,7 +85,7 @@ Uint32 LTimer::getTicks()
 		}
 	}
 
-	return time;
+	return timing;
 }
 
 bool LTimer::isStarted()

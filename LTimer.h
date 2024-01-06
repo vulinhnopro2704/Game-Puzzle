@@ -8,6 +8,8 @@ public:
     //Initializes variables
     LTimer(Uint32 time = 0);
 
+    LTimer(int time);
+
     //The various clock actions
     void start(Uint32 time = 0);
     void stop();

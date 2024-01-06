@@ -26,10 +26,8 @@ bool isPressReload = false;
 int timeToSeconds(std::string timeStr) {
     int minutes, seconds;
     char delimiter;
-
-    std::istringstream iss(timeStr);
-    iss >> minutes >> std::noskipws >> delimiter >> seconds;
-
+    minutes = (timeStr[0] - '0') * 10 + (timeStr[1] - '0');
+    seconds = timeStr.back() - '0' + (timeStr[timeStr.size() - 2] - '0') * 10;
     int totalSeconds = minutes * 60 + seconds;
     return totalSeconds;
 }
@@ -594,7 +592,7 @@ void Gameplay::SolveMouse(pair<int, int> p)
         {
             ++step;
             if (!timer.isStarted())
-                timer.start();
+                timer.start(timeToSeconds(timeplay));
         }
         isMoved = true;
     }
@@ -622,7 +620,7 @@ void Gameplay::SolveMouse(pair<int, int> p)
         {
             ++step;
             if (!timer.isStarted())
-                timer.start();
+                timer.start(timeToSeconds(timeplay));
         }
         isMoved = true;
     }
@@ -648,6 +646,16 @@ void Gameplay::Infile()
     {
         if (inFile.is_open())
         {
+            inFile >> step;
+            string temp;
+            inFile >> temp;
+            for (int i = 0; i < temp.size(); i++)
+            {
+                timeplay += temp[i];
+                if (i == 1 || i == 2) timeplay += ' ';
+            }
+
+            cout << "step: " << step << "\ntimeplay: " << timeplay << endl;
             for (int i = 1; i <= n; i++)
             {
                 for (int j = 1; j <= n; j++)
@@ -712,6 +720,12 @@ void Gameplay::Outfile()
     else
     {
         outFile << 1 << endl;
+        outFile << step << endl;
+        for (int i = 0; i < timeplay.size(); i++)
+        {
+            if (timeplay[i] != ' ') outFile << timeplay[i];
+        }
+        outFile << endl;
         if (outFile.is_open())
         {
             for (int i = 1; i <= n; i++)
@@ -859,6 +873,7 @@ void Gameplay::PressReload()
     step = 0;
     if (timer.isStarted())
         timer.stop();
+    timeplay = "00 : 00";
     isPressReload = false;
     WinnerScreenOff = false;
     UsedtoPressAutoRun = false;
@@ -896,7 +911,11 @@ void Gameplay::handleEvents() {
                     {
                         ++step;
                         if (!timer.isStarted())
-                            timer.start();
+                        {
+                            timer.start(timeToSeconds(timeplay));
+                            cout << "timeplay: " << timeplay << endl;
+                        }
+                            
                         else if (timer.isPaused())
                         {
                             timer.unpause();
@@ -918,8 +937,12 @@ void Gameplay::handleEvents() {
                     if (!checksolve)
                     {
                         ++step;
+                        cout << timeplay << " " << timeToSeconds(timeplay) << endl;
                         if (!timer.isStarted())
-                            timer.start();
+                        {
+                            timer.start(timeToSeconds(timeplay));
+                            cout << "timeplay: " << timeplay << endl;
+                        }                            
                         else if (timer.isPaused())
                         {
                             timer.unpause();
@@ -942,7 +965,7 @@ void Gameplay::handleEvents() {
                     {
                         ++step;
                         if (!timer.isStarted())
-                            timer.start();
+                            timer.start(timeToSeconds(timeplay));
                         else if (timer.isPaused())
                         {
                             timer.unpause();
@@ -965,7 +988,7 @@ void Gameplay::handleEvents() {
                     {
                         ++step;
                         if (!timer.isStarted())
-                            timer.start();
+                            timer.start(timeToSeconds(timeplay));
                         else if (timer.isPaused())
                         {
                             timer.unpause();
@@ -1119,7 +1142,8 @@ void Gameplay::SolveGame()
                     isQuit = true;
                     isRunning = false;
                     isPressBack = true;
-                    if (timer.isStarted() && !timer.isPaused())
+
+                    if (timer.isStarted() || timer.isPaused())
                     {
                         timer.pause();
                     }
@@ -1182,7 +1206,10 @@ void Gameplay::render() {
     StepTexture.loadFromRenderedText(to_string(step), { 0xFF, 0xFF, 0xFF }, 20);
     StepTexture.render(660, 28);
     
-    timeplay = millisecondsToTimeString(timer.getTicks());
+    if (timer.isStarted())
+        timeplay = millisecondsToTimeString(timer.getTicks());
+    else if (timeplay == "") timeplay = "00 : 00";
+    cout << "timeplay:  " << timeplay << endl;
     timing.loadFromRenderedText(timeplay, { 0xFF, 0xFF, 0xFF }, 20);
     timing.render(92, 28);
     ButtonMode.render(282, 6, &ButtonModeRect[n - 3]);

@@ -7,7 +7,7 @@
 LTexture Shownumber[36];
 LTexture ButtonBack, ButtonReload, ButtonAutoRun, ButtonMode, StepTexture, SolveMode, LoadingImage, FrameLoadingImage;
 LButton gButtonBack, gButtonReload, gButtonAutoRun;
-
+LTexture Loading, Waiting;
 SDL_Rect ButtonReloadRect[] = { {0, 0, 142, 142}, {0, 175, 142, 142}, {0,350 , 142, 142} };
 SDL_Rect ButtonBackRect[] = { {0, 0, 156, 156}, {0, 180, 156, 156}, {0, 361, 156, 156} };
 SDL_Rect ButtonAutoRunRect[] = { {0, 0, 327, 65}, {0, 182, 327, 65}, {0, 356, 327, 65} };
@@ -30,12 +30,6 @@ int timeToSeconds(std::string timeStr) {
     seconds = timeStr.back() - '0' + (timeStr[timeStr.size() - 2] - '0') * 10;
     int totalSeconds = minutes * 60 + seconds;
     return totalSeconds;
-}
-
-void Gameplay::SetInitialStatus()
-{
-    res = 1;
-    UsedtoPressAutoRun = false;
 }
 
 bool Gameplay::LoadMedia() 
@@ -80,6 +74,14 @@ bool Gameplay::LoadMedia()
     {
         success = false;
     }
+    else if (!Loading.loadFromFile("Data//Loading//Loading.png"))
+    {
+        success = false;
+    }
+    else if (!Waiting.loadFromFile("Data//Loading//Waiting.png"))
+    {
+        success = false;
+    }
     string sound = "Music//Soundtrack" + to_string(OrderSoundtrack) + ".mp3";
     if (!(gSoundTrack = Mix_LoadMUS(sound.c_str())))
     {
@@ -112,6 +114,22 @@ std::string millisecondsToTimeString(Uint32 milliseconds) {
 
     return mm + " : " + ss;
 }
+double Angle = 0.0; //Góc xoay
+int tmp = 0;
+void LoadingScreen()
+{
+    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_RenderClear(gRenderer);
+    Loading.render(0, 0);
+    if (tmp == 30)
+    {
+        Angle = int(Angle + 30.0) % 360;
+        tmp = 0;
+    }
+    else ++tmp;
+    Waiting.render(587, 310, NULL, Angle);
+    SDL_RenderPresent(gRenderer);
+}
 
 void Gameplay::CheckRand()
 {
@@ -135,6 +153,7 @@ void Gameplay::Random(int height)
     //Hàm random + tính tọa độ ảnh
     Height = height;
     while (1) {
+        LoadingScreen();
         int tam = 0;
         check = 0;
         b.resize(n * n);
@@ -521,6 +540,7 @@ void Gameplay::setA()
     //Đặt tráng thái ban đầu của vecto a
     for (int i = 0; i <= n + 1; i++) {
         for (int j = 0; j <= n + 1; j++) {
+            LoadingScreen();
             a[i][j] = n * n;
         }
     }
@@ -792,6 +812,7 @@ std::vector<SDL_Texture*> CutTextureIntoPieces(SDL_Texture* texture, int n) {
 
 void Gameplay::SetNguoc(int height)
 {
+    LoadingScreen();
     Height = height;
     int tmp = n * n;
     for (int i = 1; i <= n; i++)
@@ -823,9 +844,15 @@ void Gameplay::SetUpGame(int height)
         Mode = 1;
     }
     else if (Mode == 1)
+    {
         Random(height);
+        timeplay = "";
+    }
     else if (Mode == 2)
+    {
         SetNguoc(height);
+        timeplay = "";
+    }
    /* cout << "Hello\n";
     cout << Poszero.first << " " << Poszero.second << endl;
     display(a);
@@ -1040,11 +1067,11 @@ void Gameplay::handleEvents() {
             isRunning = false;
             isPressBack = true;
             Outfile();
+            timeplay = "";
             if (timer.isStarted() && !timer.isPaused())
             {
-                timer.pause();
+                timer.stop();
             }
-            SetInitialStatus();
         }
         if (!checksolve && !CheckGoal(a))
         {
@@ -1203,15 +1230,15 @@ void Gameplay::render() {
     else 
         gButtonAutoRun.render(ButtonAutoRun, ButtonAutoRunRect);
 
-    StepTexture.loadFromRenderedText(to_string(step), { 0xFF, 0xFF, 0xFF }, 20);
-    StepTexture.render(660, 28);
+    StepTexture.loadFromRenderedText(to_string(step), { 0xFF, 0xFF, 0xFF }, 25);
+    StepTexture.render(660, 20);
     
     if (timer.isStarted())
         timeplay = millisecondsToTimeString(timer.getTicks());
     else if (timeplay == "") timeplay = "00 : 00";
     cout << "timeplay:  " << timeplay << endl;
-    timing.loadFromRenderedText(timeplay, { 0xFF, 0xFF, 0xFF }, 20);
-    timing.render(92, 28);
+    timing.loadFromRenderedText(timeplay, { 0xFF, 0xFF, 0xFF }, 25);
+    timing.render(92, 20);
     ButtonMode.render(282, 6, &ButtonModeRect[n - 3]);
 
     for (int i = 1; i <= n * n - 1; i++)
@@ -1244,10 +1271,6 @@ void Gameplay::render() {
             {
                 PressReload();
                 isPressReload = false;
-            }
-            else if (isPressBack)
-            {
-                SetInitialStatus();
             }
             else WinnerScreenOff = true;
         }
@@ -1309,6 +1332,7 @@ void Gameplay::clean() {
 void Gameplay::Run() {
     if (LoadMedia())
     {
+        timeplay = "";
         WinnerScreenOff = false;
         SetUpGame(594);
         for (int i = 1; i <= n * n; ++i)

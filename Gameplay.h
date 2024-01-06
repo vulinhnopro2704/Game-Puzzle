@@ -53,6 +53,7 @@ public:
             res = 1;
             step = 0;
             isRunning = true;
+            timeplay = "";
         }
     //Flag kiểm tra xem có tiếp tục game hay tạo mới
     Gameplay(string PlayerName, bool flag = false) : PlayerName(PlayerName), ContinueGame(flag),  Goal(vector<vector<int>>(6 + 2, vector<int>(6 + 2))),
@@ -69,6 +70,7 @@ public:
             res = 1;
             step = 0;
             isRunning = true;
+            timeplay = "";
         }
     void PressReload();
     void SetNguoc(int height);

@@ -27,40 +27,36 @@ int OrderSoundeffect = 0;
 bool GUEST = false;
 int main(int argc, char* argv[])
 {
-    
-    while (!outGame)
+    Login user;
+    user.Run();
+    GUEST = user.getGuest();
+    if (!GUEST)
     {
-        Login user;
-        user.Run();
-        GUEST = user.getGuest();
-        if (!GUEST)
-        {
-            NumCurrent = user.getNumFile();
-            MainMenu a(user.getName());
-            a.run();
-            GUEST = false;
-        }
-        else
-        {
-            MainMenu a("Guest");
-            a.run();
-        }
-        isUSE = false;
-        SDL_DestroyRenderer(gRenderer);
-        SDL_DestroyWindow(gWindow);
-        gWindow = NULL;
-        gRenderer = NULL;
-
-        if (gFont != NULL) {
-            TTF_CloseFont(gFont);
-            gFont = NULL;
-        }
-
-        Mix_Quit();
-        IMG_Quit();
-        TTF_Quit();
-        SDL_Quit();
+       NumCurrent = user.getNumFile();
+       MainMenu a(user.getName());
+       a.run();
+       GUEST = false;
+     }
+    else
+    {
+        MainMenu a("Guest");
+        a.run();
     }
+    isUSE = false;
+    SDL_DestroyRenderer(gRenderer);
+    SDL_DestroyWindow(gWindow);
+    gWindow = NULL;
+    gRenderer = NULL;
+
+    if (gFont != NULL) {
+        TTF_CloseFont(gFont);
+        gFont = NULL;
+    }
+
+    Mix_Quit();
+    IMG_Quit();
+    TTF_Quit();
+    SDL_Quit();
     
 	return 0;
 }

@@ -35,7 +35,8 @@ public:
 
 #if defined(SDL_TTF_MAJOR_VERSION)
 	//Creates image from font string
-	bool loadFromRenderedText(std::string textureText, SDL_Color textColor, int FontSize = 56);
+	bool loadFromRenderedText(std::string textureText, SDL_Color textColor, 
+		int FontSize = 56, std::string FontPath = "Font//Bungee-Regular.ttf");
 #endif
 
 	//Gets image dimensions

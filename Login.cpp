@@ -1,5 +1,7 @@
 #include "Login.h"
 
+LTexture tmp;
+
 bool Login::Init()
 {
     bool success = true;
@@ -40,6 +42,7 @@ bool Login::Init()
         }
     }
     isInit = success;
+    tmp.loadFromRenderedText("|", { 0, 0, 0 }, 25);
     return success;
 }
 
@@ -87,18 +90,21 @@ Login::Login()
 
 Login::~Login()
 {
+    cout << "out file:\n";
     ofstream outFile("Account//Account.txt");
     if (outFile.is_open())
     {
         outFile << CountAccount << endl;
+        cout << "CheckA:\n";
         for (auto x: CheckA)
         {
             outFile << x.first << endl;
             cout << x.first << endl;
         }
+        cout << "Account:\n";
         for (auto x : Account)
         {
-            if (x.first.size())
+            if (x.first.size() && x.second.first.size())
             {
                 outFile << x.first << " " << x.second.first << " " << x.second.second << endl;
                 cout << x.first << " " << x.second.first << " " << x.second.second << endl;
@@ -175,11 +181,11 @@ bool Login::HandleEvent()
             //Special key input
             if (Log)
             {
-                RName = "";
-                RPass = "";
-                RCPass = "";
-                RHidePass = "";
-                RCHidePass = "";
+                RName = "|";
+                RPass = " ";
+                RCPass = " ";
+                RHidePass = " ";
+                RCHidePass = " ";
                 if (e.type == SDL_KEYDOWN)
                 {
                     //Handle backspace
@@ -188,11 +194,14 @@ bool Login::HandleEvent()
                         //lop off character
                         if (Lcheck)
                         {
-                            if (Name.size()) Name.pop_back();
+                            if (Name.size() > 1)
+                            {
+                                Name.pop_back();
+                            }
                         }
                         else
                         {
-                            if (Pass.size())
+                            if (Pass.size() > 1)
                             {
                                 Pass.pop_back();
                                 HidePass.pop_back();
@@ -216,6 +225,11 @@ bool Login::HandleEvent()
                     }
                     else if ((e.key.keysym.sym == SDLK_RETURN || e.key.keysym.sym == SDLK_RETURN2))
                     {
+                        //cout << Name << ":" << endl;
+                        Name.pop_back();
+                        Pass.pop_back();
+                        HidePass.pop_back();
+                        cout << Name << " " << Pass << " " << HidePass << endl;
                         if (Name.size())
                         {
                             if (!Lcheck)
@@ -232,7 +246,6 @@ bool Login::HandleEvent()
                                         else
                                         {
                                             RenderAnnounce("Sai mat khau, vui long nhap lai!");
-
                                         }
                                     }
                                     else
@@ -251,9 +264,21 @@ bool Login::HandleEvent()
                             else
                             {
                                 Lcheck = false;
+                                ////Name.pop_back();
+                                //Name += "|";
+                                ////Pass.pop_back();
+                                //Pass += " ";
+                                ////HidePass.pop_back();
+                                //HidePass += " ";
                             }
                         }
                         //isHadNameInput = true;
+                        if (!Lquit)
+                        {
+                            Name += " ";
+                            Pass += "|";
+                            HidePass += "|";
+                        }
                     }
                 }
                 //Special text input event
@@ -264,7 +289,12 @@ bool Login::HandleEvent()
                         if (Name.size() <= 16 && !(SDL_GetModState() & KMOD_CTRL && (e.text.text[0] == 'c' || e.text.text[0] == 'C' || e.text.text[0] == 'v' || e.text.text[0] == 'V')))
                         {
                             //Append character
-                            if (e.text.text[0] != ' ') Name += e.text.text;
+                            if (e.text.text[0] != ' ')
+                            {
+                                Name.pop_back();
+                                Name += e.text.text;
+                                Name += "|";
+                            }
                             renderText = true;
                         }
                     }
@@ -275,8 +305,13 @@ bool Login::HandleEvent()
                             //Append character
                             if (e.text.text[0] != ' ')
                             {
+                                Pass.pop_back();
+                                HidePass.pop_back();
                                 Pass += e.text.text;
                                 HidePass += '*';
+                                /*PTrochuot.pop_back();*/
+                                Pass += "|";
+                                HidePass += "|";
                             }
                             renderText = true;
                         }
@@ -287,18 +322,7 @@ bool Login::HandleEvent()
                 {
                     int x = e.motion.x, y = e.motion.y;
                     cout << x << " " << y << endl;
-                    //if (x >= 977 && x <= 977 + 115 && y >= 111 && y <= 226)
-                    //{
-                    //    Lquit = true;
-                    //    //isHadNameInput = false;
-                    //    break;
-                    //}
-                    //else if (x >= 407 && x <= 407 + 470 && y >= 509 && y <= 613 && Name.size() && Pass.size())
-                    //{
-                    //    Lquit = true;
-                    //    //isHadNameInput = true;
-                    //}
-                    /*else*/ if (x >= 800 && x <= 840 && y >= 375 && y <= 400)
+                    if (x >= 800 && x <= 840 && y >= 375 && y <= 400)
                     {
                         Hide = !Hide;
                         if (Hide) LPinputTextTexture.loadFromRenderedText(HidePass.c_str(), textColor, 25);
@@ -308,6 +332,7 @@ bool Login::HandleEvent()
                     {
                         cout << "Register\n";
                         Log = false;
+                        Rcheck = 0;
                     }
                     else if (x >= 380 && x <= 500 && y >= 520 && y <= 560)
                     {
@@ -327,11 +352,32 @@ bool Login::HandleEvent()
                     }
                     else if (x >= 430 && x <= 850)
                     {
-                        if (y >= 260 && y <= 305) Lcheck = true;
-                        else if (y >= 365 && y <= 410) Lcheck = false;
+                        if (y >= 260 && y <= 305)
+                        {
+                            Lcheck = true;
+                            Name.pop_back();
+                            Name += "|";
+                            Pass.pop_back();
+                            Pass += " ";
+                            HidePass.pop_back();
+                            HidePass += " ";
+                        }
+                        else if (y >= 365 && y <= 410)
+                        {
+                            Lcheck = false;
+                            Name.pop_back();
+                            Name += " ";
+                            Pass.pop_back();
+                            Pass += "|";
+                            HidePass.pop_back();
+                            HidePass += "|";
+                        }
                         else if (y >= 445 && y <= 500)
                         {
                             // Login
+                            Name.pop_back();
+                            Pass.pop_back();
+                            HidePass.pop_back();
                             if (Pass.size() && Name.size())
                             {
                                 if (CheckA[Name])
@@ -366,15 +412,31 @@ bool Login::HandleEvent()
                             {
                                 RenderAnnounce("Vui long nhap tai khoan va mat khau");
                             }
+                            if (!Lquit)
+                            {
+                                if (Lcheck)
+                                {
+                                    Name += "|";
+                                    Pass += " ";
+                                    HidePass += " ";
+                                }
+                                else
+                                {
+                                    Name += " ";
+                                    Pass += "|";
+                                    HidePass += "|";
+                                }
+                                
+                            }
                         }
                     }
                 }
             }
             else
             {
-                Name = "";
-                Pass = "";
-                HidePass = "";
+                Name = "|";
+                Pass = " ";
+                HidePass = " ";
                 //Register;
                 if (e.type == SDL_KEYDOWN)
                 {
@@ -384,11 +446,11 @@ bool Login::HandleEvent()
                         //lop off character
                         if (Rcheck == 0)
                         {
-                            if (RName.size()) RName.pop_back();
+                            if (RName.size() > 1) RName.pop_back();
                         }
                         else if(Rcheck == 1)
                         {
-                            if (RPass.size())
+                            if (RPass.size() > 1)
                             {
                                 RPass.pop_back();
                                 RHidePass.pop_back();
@@ -396,7 +458,7 @@ bool Login::HandleEvent()
                         }
                         else
                         {
-                            if (RCPass.size())
+                            if (RCPass.size() > 1)
                             {
                                 RCPass.pop_back();
                                 RCHidePass.pop_back();
@@ -421,6 +483,11 @@ bool Login::HandleEvent()
                     }
                     else if ((e.key.keysym.sym == SDLK_RETURN || e.key.keysym.sym == SDLK_RETURN2))
                     {
+                        RName.pop_back();
+                        RPass.pop_back();
+                        RCPass.pop_back();
+                        RHidePass.pop_back();
+                        RCHidePass.pop_back();
                         if (RName.size())
                         {
                             if (Rcheck == 2)
@@ -430,18 +497,18 @@ bool Login::HandleEvent()
                                     if (CheckA[RName])
                                     {
 
-                                        cout << "Tai khoan da ton tai!\n";
+                                        RenderAnnounce("Tai khoan da ton tai!");
                                     }
                                     else
                                     {
                                         if (RPass != RCPass)
                                         {
-                                            cout << "Mat khau khong trung khop\n";
+                                            RenderAnnounce("Mat khau khong trung khop");
                                             CheckA.erase(RName);
                                         }
                                         else
                                         {
-                                            cout << "Tao tai khoan thanh cong!\n";
+                                            RenderAnnounce("Tao tai khoan thanh cong!");
                                             CheckA[RName] = true;
                                             Account[RName] = { RPass, CountAccount };
                                             TaoFile(to_string(CountAccount), to_string(3));
@@ -450,17 +517,18 @@ bool Login::HandleEvent()
                                             TaoFile(to_string(CountAccount), to_string(6));
                                             CountAccount++;
                                             Log = true;
+                                            Lcheck = true;
                                         }
 
                                     }
                                 }
                                 else if (RPass.size())
                                 {
-                                    cout << "Vui long nhap lai mat khau!\n";
+                                    RenderAnnounce("Vui long nhap lai mat khau!");
                                 }
                                 else
                                 {
-                                    cout << "Vui long nhap mat khau!\n";
+                                    RenderAnnounce("Vui long nhap mat khau!");
                                 }
 
                                 
@@ -468,6 +536,34 @@ bool Login::HandleEvent()
                             else
                             {
                                 Rcheck++;
+                            }
+                            if (!Log)
+                            {
+                                if (Rcheck == 0)
+                                {
+                                    RName += "|";
+                                    RPass += " ";
+                                    RHidePass += " ";
+                                    RCPass += " ";
+                                    RCHidePass += " ";
+                                }
+                                else if (Rcheck == 1)
+                                {
+                                    RName += " ";
+                                    RPass += "|";
+                                    RHidePass += "|";
+                                    RCPass += " ";
+                                    RCHidePass += " ";
+                                }
+                                else
+                                {
+                                    RName += " ";
+                                    RPass += " ";
+                                    RHidePass += " ";
+                                    RCPass += "|";
+                                    RCHidePass += "|";
+
+                                }
                             }
                         }
                         //isHadNameInput = true;
@@ -481,7 +577,12 @@ bool Login::HandleEvent()
                         if (RName.size() <= 16 && !(SDL_GetModState() & KMOD_CTRL && (e.text.text[0] == 'c' || e.text.text[0] == 'C' || e.text.text[0] == 'v' || e.text.text[0] == 'V')))
                         {
                             //Append character
-                            if (e.text.text[0] != ' ') RName += e.text.text;
+                            if (e.text.text[0] != ' ')
+                            {
+                                RName.pop_back();
+                                RName += e.text.text;
+                                RName += "|";
+                            }
                             renderText = true;
                         }
                     }
@@ -492,8 +593,12 @@ bool Login::HandleEvent()
                             //Append character
                             if (e.text.text[0] != ' ')
                             {
+                                RPass.pop_back();
+                                RHidePass.pop_back();
                                 RPass += e.text.text;
                                 RHidePass += '*';
+                                RHidePass += "|";
+                                RPass += "|";
                             }
                             
                             renderText = true;
@@ -506,8 +611,12 @@ bool Login::HandleEvent()
                             //Append character
                             if (e.text.text[0] != ' ')
                             {
+                                RCPass.pop_back();
+                                RCHidePass.pop_back();
                                 RCPass += e.text.text;
                                 RCHidePass += '*';
+                                RCPass += "|";
+                                RCHidePass += "|";
                             }
                             renderText = true;
                         }
@@ -521,6 +630,7 @@ bool Login::HandleEvent()
                     if (x >= 670 && x <= 800 && y >= 570 && y <= 610)
                     {
                         Log = true;
+                        Lcheck = true;
                         //isHadNameInput = false;
                         break;
                     }
@@ -531,9 +641,49 @@ bool Login::HandleEvent()
                     //}
                     else if (x >= 430 && x <= 850)
                     {
-                        if (y >= 210 && y <= 250) Rcheck = 0;
-                        else if (y >= 315 && y <= 360) Rcheck = 1;
-                        else if (y >= 425 && y <= 470) Rcheck = 2;
+                        if (y >= 210 && y <= 250)
+                        {
+                            Rcheck = 0;
+                            RName.pop_back();
+                            RName += "|";
+                            RPass.pop_back();
+                            RCPass.pop_back();
+                            RHidePass.pop_back();
+                            RCHidePass.pop_back();
+                            RPass += " ";
+                            RCPass += " ";
+                            RCHidePass += " ";
+                            RHidePass += " ";
+
+                        }
+                        else if (y >= 315 && y <= 360)
+                        {
+                            Rcheck = 1;
+                            RName.pop_back();
+                            RName += " ";
+                            RPass.pop_back();
+                            RCPass.pop_back();
+                            RHidePass.pop_back();
+                            RCHidePass.pop_back();
+                            RPass += "|";
+                            RCPass += " ";
+                            RCHidePass += " ";
+                            RHidePass += "|";
+                        }
+                        else if (y >= 425 && y <= 470)
+                        {
+                            Rcheck = 2;
+                            RName.pop_back();
+                            RName += " ";
+                            RPass.pop_back();
+                            RCPass.pop_back();
+                            RHidePass.pop_back();
+                            RCHidePass.pop_back();
+                            RPass += " ";
+                            RCPass += "|";
+                            RCHidePass += "|";
+                            RHidePass += " ";
+                        }
                         else if (y >= 505 && y <= 565)
                         {
                             // Register
@@ -563,6 +713,7 @@ bool Login::HandleEvent()
                                         CountAccount++;
                                         
                                         Log = true;
+                                        Lcheck = true;
                                     }
 
                                 }
@@ -593,13 +744,14 @@ bool Login::HandleEvent()
             //Text is not empty
             if (Log)
             {
-                RName = "";
-                RPass = "";
-                RCPass = "";
-                RHidePass = "";
-                RCHidePass = "";
+                RName = "|";
+                RPass = " ";
+                RCPass = " ";
+                RHidePass = " ";
+                RCHidePass = " ";
                 /*if (Lcheck)
                 {*/
+                //LNTrochuot.loadFromRenderedText(Trochuot, textColor, 25);
                     if (Name != "")
                     {
                         //Render new text
@@ -630,9 +782,9 @@ bool Login::HandleEvent()
             }
             else
             {
-                Name = "";
-                Pass = "";
-                HidePass = "";
+                Name = "|";
+                Pass = " ";
+                HidePass = " ";
                 //Register
                 /*if (Rcheck == 0)
                 {*/
@@ -689,15 +841,51 @@ bool Login::HandleEvent()
     //Disable text input
     SDL_StopTextInput();
     cout << Name << " " << Pass << endl;
-    cout << RName << " " << RPass << endl;
+    //cout << RName << " " << RPass << endl;
     return true;
 }
 
 void Login::Render()
 {
+    //SDL_Color textColor = { 0, 0, 0, 0xFF };
     SDL_RenderClear(gRenderer);
     if (Log)
     {
+        //cout << "t: " << t << endl;
+        if (t <= 99 && t >= 0)
+        {
+            if (Lcheck)
+            {
+                Name.pop_back();
+                Name += "|";
+            }
+            else
+            {
+                Pass.pop_back();
+                HidePass.pop_back();
+                Pass += "|";
+                HidePass += "|";
+            }
+            
+        }
+        else if(t <= 199)
+        {
+            if (Lcheck)
+            {
+                Name.pop_back();
+                Name += " ";
+            }
+            else
+            {
+                Pass.pop_back();
+                HidePass.pop_back();
+                Pass += " ";
+                HidePass += " ";
+            }
+            
+        }
+        t++;
+        if (t >= 200) t = 0;
         Llogin.render(0, 0);
         LNinputTextTexture.render(450, 273);
         LPinputTextTexture.render(450, 378);
@@ -705,6 +893,54 @@ void Login::Render()
 
     else
     {
+        if (T <= 99 && T >= 0)
+        {
+            if (Rcheck == 0)
+            {
+                RName.pop_back();
+                RName += "|";
+            }
+            else if(Rcheck == 1)
+            {
+                RPass.pop_back();
+                RHidePass.pop_back();
+                RPass += "|";
+                RHidePass += "|";
+            }
+            else
+            {
+                RCPass.pop_back();
+                RCHidePass.pop_back();
+                RCPass += "|";
+                RCHidePass += "|";
+            }
+
+        }
+        else if (T <= 199)
+        {
+            if (Rcheck == 0)
+            {
+                RName.pop_back();
+                RName += " ";
+            }
+            else if(Rcheck == 1)
+            {
+                RPass.pop_back();
+                RHidePass.pop_back();
+                RPass += " ";
+                RHidePass += " ";
+            }
+            else
+            {
+                RCPass.pop_back();
+                RCHidePass.pop_back();
+                RCPass += " ";
+                RCHidePass += " ";
+            }
+
+        }
+        T++;
+        if (T >= 200) T = 0;
         Lregister.render(0, 0);
         RNinputTextTexture.render(450, 220);
         RPinputTextTexture.render(450, 325);
